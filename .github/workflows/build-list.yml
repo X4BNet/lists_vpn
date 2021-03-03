@@ -1,0 +1,15 @@
+name: Build Database
+on:
+  push:
+
+jobs:
+  check_eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: ASN -> IP Range
+      run: |
+        curl https://iptoasn.com/data/ip2asn-v4.tsv.gz | gzip -d > /tmp/asndb.tsv
+        while read p; do
+          echo "$p"
+        done <$(cat ./input/ASN.txt | grep -v '^#' | awk '{print $1}' | grep '^AS')
