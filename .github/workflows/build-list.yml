@@ -1,15 +1,39 @@
-name: Build Database
+name: Build Database Update
 on:
   push:
+    paths:
+    - 'input/**'
+    - '.github/workflows/*'
 
 jobs:
-  check_eslint:
+  build_and_commit:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Dependencies
+      run: |
+        sudo apt-get install ipcalc
     - name: ASN -> IP Range
       run: |
         curl https://iptoasn.com/data/ip2asn-v4.tsv.gz | gzip -d > /tmp/asndb.tsv
-        while read p; do
-          echo "$p"
-        done <$(cat ./input/ASN.txt | grep -v '^#' | awk '{print $1}' | grep '^AS')
+        cat $GITHUB_WORKSPACE/input/ASN.txt | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
+          awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
+        done
+    - name: Manual Processed
+      run: |
+        cat $GITHUB_WORKSPACE/input/Manual.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+    - name: Merge Lists
+      run: |
+        cat /tmp/asn-processed.txt /tmp/manual-processed.txt > ipv4.txt
+    - name: Push Output
+      uses: dmnemec/copy_file_to_another_repo_action@master
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        source_file: 'ipv4.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        #destination_branch_create: "update/${{ github.repository }}/${{steps.halley.outputs.release_version}}"
+
