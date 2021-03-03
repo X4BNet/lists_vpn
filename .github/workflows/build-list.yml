@@ -4,6 +4,8 @@ on:
     paths:
     - 'input/**'
     - '.github/workflows/*'
+  schedule:
+    - cron:  '45 8 * * *'
 
 jobs:
   build_and_commit:
@@ -35,5 +37,5 @@ jobs:
         destination_folder: '/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        #destination_branch_create: "update/${{ github.repository }}/${{steps.halley.outputs.release_version}}"
+        #destination_branch_create: "update/date"
 
