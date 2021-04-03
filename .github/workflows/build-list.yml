@@ -30,7 +30,7 @@ jobs:
     - name: Merge Lists
       run: |
         cat /tmp/asn-processed.txt /tmp/manual-processed.txt > /tmp/ipv4.txt
-        perl ./helpers/cleanup.pl /tmp/ipv4.txt > ipv4.txt
+        perl ./helpers/cleanup.pl /tmp/ipv4.txt | grep -E '/(2[789]|3[12])' > ipv4.txt
     - name: Push Output
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
