@@ -28,7 +28,7 @@ jobs:
       run: |
         cat /tmp/asn-processed.txt /tmp/manual-processed.txt > ipv4.txt
     - name: Push Output
-      uses: dmnemec/copy_file_to_another_repo_action@master
+      uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
