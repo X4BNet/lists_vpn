@@ -15,10 +15,13 @@ jobs:
     - name: Dependencies
       run: |
         sudo apt-get install ipcalc
-    - name: ASN -> IP Range
+    - name: Downloading ASN database
       run: |
         curl https://iptoasn.com/data/ip2asn-v4.tsv.gz | gzip -d > /tmp/asndb.tsv
+    - name: ASN -> IP Range
+      run: |
         cat $GITHUB_WORKSPACE/input/ASN.txt | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
+          echo "Processing $asn"
           awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
     - name: Manual Processed
@@ -26,7 +29,8 @@ jobs:
         cat $GITHUB_WORKSPACE/input/Manual.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
     - name: Merge Lists
       run: |
-        cat /tmp/asn-processed.txt /tmp/manual-processed.txt > ipv4.txt
+        cat /tmp/asn-processed.txt /tmp/manual-processed.txt > /tmp/ipv4.txt
+        perl ./helpers/cleanup.pl /tmp/ipv4.txt > ipv4.txt
     - name: Push Output
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
