@@ -743,3 +743,5 @@ AS62026 #SkyparkCDN Ltd.
 AS61107 #UNIVERSAL CDN (CYPRUS) LTD
 AS209854 #Surfshark
 AS396998 #Path Network, Inc
+AS32751 #Nuclearfallout Enterprises, Inc
+
