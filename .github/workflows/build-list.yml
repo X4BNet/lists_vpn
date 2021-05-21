@@ -41,5 +41,5 @@ jobs:
         destination_folder: '/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "master"
+        destination_branch: "main"
 
