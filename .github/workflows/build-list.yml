@@ -31,6 +31,22 @@ jobs:
       run: |
         cat /tmp/asn-processed.txt /tmp/manual-processed.txt > /tmp/ipv4.txt
         perl ./helpers/cleanup.pl /tmp/ipv4.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > ipv4.txt
+    - name: Test generated Lists
+      run: |
+        if [[ $(grep 0.0.0.0 ipv4.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 0.0.0.0"
+          exit 1
+        fi
+
+        ips_covered=$(awk -F/ 'BEGIN{a=0}{a+=2^(32-$2)}END{print a}' ipv4.txt)
+        if [[ "$ips_covered" -lt 10000000 ]]; then
+          echo "Too few addresses covered"
+          exit 1
+        fi
+        if [[ "$ips_covered" -gt 300000000 ]]; then
+          echo "Too many addresses covered"
+          exit 1
+        fi
     - name: Push Output of ipv4.txt
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
