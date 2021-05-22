@@ -1,5 +1,3 @@
-This is a Work In Progress and not yet complete!
-
 # VPN & datacenter IPs
 This is a list of common VPN providers. There are lots of lists of open proxies and tor nodes on the web, but surprisingly few usable ones dedicated to VPN providers and datacenters. This list combines:
 
