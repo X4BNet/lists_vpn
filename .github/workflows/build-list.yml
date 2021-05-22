@@ -33,8 +33,12 @@ jobs:
         perl ./helpers/cleanup.pl /tmp/ipv4.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > ipv4.txt
     - name: Test generated Lists
       run: |
-        if [[ $(grep 0.0.0.0 ipv4.txt | wc -l) != "0" ]]; then
-          echo "Lists can not contain 0.0.0.0"
+        if [[ $(grep ^0. ipv4.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 0.0.0.0/8"
+          exit 1
+        fi
+        if [[ $(grep ^127. ipv4.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 12.0.0.1/8"
           exit 1
         fi
 
