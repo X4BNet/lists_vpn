@@ -3,6 +3,8 @@ on:
   push:
     paths:
     - 'ipv4.txt'
+    branches:
+    - main
   workflow_dispatch:
 
 jobs:
