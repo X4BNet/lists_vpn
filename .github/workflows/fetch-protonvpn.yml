@@ -2,7 +2,6 @@ name: "Fetch: ProtonVPN"
 on:
   push:
     paths:
-    - 'input/**'
     - '.github/workflows/fetch-protonvpn.yml'
   schedule:
     - cron:  '30 8 * * *'
@@ -42,7 +41,7 @@ jobs:
           echo "Too many addresses covered"
           exit 1
         fi
-    - name: Push Output of ipv4.txt
+    - name: Push Output of protonvpn.txt
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
