@@ -27,7 +27,8 @@ jobs:
         done
     - name: Merge Lists
       run: |
-        # Remove too small allocations from ASN list
+        # Remove too small allocations from ASN list (anything less than a /24 can't be announced)
+        # TODO: This might remove some SWIP'ed ranges (needs evaluation)
         perl ./helpers/cleanup.pl /tmp/asn-processed.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > /tmp/asn-cleaned.txt
 
         # Combine lists
