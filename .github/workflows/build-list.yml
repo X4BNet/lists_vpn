@@ -25,13 +25,17 @@ jobs:
           echo "Processing $asn"
           awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
-    - name: Manual Processed
-      run: |
-        cat $GITHUB_WORKSPACE/input/ips/* | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
     - name: Merge Lists
       run: |
-        cat /tmp/asn-processed.txt /tmp/manual-processed.txt > /tmp/ipv4.txt
-        perl ./helpers/cleanup.pl /tmp/ipv4.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > ipv4.txt
+        # Remove too small allocations from ASN list
+        perl ./helpers/cleanup.pl /tmp/asn-processed.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > /tmp/asn-cleaned.txt
+
+        # Combine lists
+        cat $GITHUB_WORKSPACE/input/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        cat /tmp/asn-cleaned.txt /tmp/manual-processed.txt | sort -n > /tmp/ipv4.txt
+
+        # Final cleanup
+        perl ./helpers/cleanup.pl /tmp/ipv4.txt > ipv4.txt
     - name: Test generated Lists
       run: |
         if [[ $(grep ^0. ipv4.txt | wc -l) != "0" ]]; then
