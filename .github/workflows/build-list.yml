@@ -3,9 +3,10 @@ on:
   push:
     paths:
     - 'input/**'
-    - '.github/workflows/*'
+    - '.github/workflows/build-list.yml'
   schedule:
     - cron:  '45 8 * * *'
+  workflow_dispatch:
 
 jobs:
   build_and_commit:
@@ -26,7 +27,7 @@ jobs:
         done
     - name: Manual Processed
       run: |
-        cat $GITHUB_WORKSPACE/input/Manual.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        cat $GITHUB_WORKSPACE/input/ips/* | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
     - name: Merge Lists
       run: |
         cat /tmp/asn-processed.txt /tmp/manual-processed.txt > /tmp/ipv4.txt
@@ -42,7 +43,7 @@ jobs:
           exit 1
         fi
 
-        ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+1}else{a+=2^(32-$2)}}END{print a}' ipv4.txt)
+        ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' ipv4.txt)
         if [[ "$ips_covered" -lt 13970713 ]]; then
           echo "Too few addresses covered"
           exit 1
