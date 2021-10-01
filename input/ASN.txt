@@ -746,3 +746,24 @@ AS61107 #UNIVERSAL CDN (CYPRUS) LTD
 AS209854 #Surfshark
 AS136787 # NordVPN (TEFINCOM S.A.)
 AS32751 # Octovpn / xbox VPN
+AS35540 # OVH SAS
+AS59711 # HZ Hosting Ltd
+AS61046 # HZ Hosting Ltd
+AS34011 # Host Europe GmbH
+AS202015 # HZ Hosting Ltd
+AS394474 # WhiteLabelColo
+AS205016 # Opera Software AS
+AS204601 # Zomro B.V.
+AS46606 # Unified Layer
+AS25291 # SysEleven GmbH
+AS206246 # REACH MEDIA SKY LLP
+AS37518 # Fiber Grid INC
+AS39832 # Opera Software AS
+AS60729 # Zwiebelfreunde e.V.
+AS208323 # Foundation for Applied Privacy
+AS8881 # 1&1 Versatel Deutschland GmbH
+AS202276 # IBOSS, INC
+AS213010 # GigaHostingServices OU
+AS35913 # DediPath
+AS136907 # HUAWEI CLOUDS
+AS24806 # INTERNET CZ, a.s.
