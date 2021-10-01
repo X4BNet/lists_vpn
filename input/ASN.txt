@@ -746,3 +746,27 @@ AS61107 #UNIVERSAL CDN (CYPRUS) LTD
 AS209854 #Surfshark
 AS136787 # NordVPN (TEFINCOM S.A.)
 AS32751 # Octovpn / xbox VPN
+AS15694 # Atman S.A.
+AS41406 # Atman S.A.
+AS57367 # Atman S.A.
+AS197226 # SPRINT S.A.
+AS200088 # Artnet Sp. z o.o.
+AS42927 # S-NET Sp. z o.o.
+AS29522 # H88 S.A.
+AS203417 # LH.pl Sp. z o.o.
+AS47544 # IQ PL Sp. z o.o.
+AS43962 # INTEN J. Granat
+AS208566 # Rozetka Sp. z o.o.
+AS12824 # home.pl S.A.
+AS15967 # Nazwa.pl Sp.z.o.o.
+AS201814 # Meverywhere sp. z o.o.
+AS60713 # Agnat Sp. z o.o. - EXEA Sp. z o.o.
+AS206589 # NSIX Data Center sp. z o.o.
+AS47223 # Lukman Multimedia Sp. z o.o
+AS20552 # Horyzont Technologie Internetowe sp.z.o.o.
+AS48505 # Kylos sp. z o.o.
+AS31242 # 3S S.A.
+AS59472 # Sinersio Polska Sp. z o.o.
+AS29593 # WOJCIECH LOREK ENDOR COMPUTERS
+AS15391 # FORMAT sp. z o.o.
+AS39566 # Smarthost sp. z o.o.
