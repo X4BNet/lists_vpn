@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Push IPv4 to processing repository
-      uses: splitice/copy_file_to_another_repo_action@main
+      uses: X4BNet/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
       with:

@@ -58,7 +58,7 @@ jobs:
           exit 1
         fi
     - name: Push Output of ipv4.txt
-      uses: splitice/copy_file_to_another_repo_action@main
+      uses: X4BNet/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
