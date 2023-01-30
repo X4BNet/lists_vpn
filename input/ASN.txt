@@ -6,7 +6,6 @@ AS4250 # ALENT-ASN-1 - Alentus Corporation, US
 AS4323 # TWTC - tw telecom holdings, inc., US
 AS4694 # IDC Yahoo Japan Corporation, JP
 AS5577 # ROOT, LU
-AS4766 # Korea Telecom, KR
 AS4713 # Open Computer Network, JP
 AS6724 # STRATO STRATO AG, DE
 AS6870 # H1ASN, RU
