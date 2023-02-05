@@ -760,7 +760,6 @@ AS37518 # Fiber Grid INC
 AS39832 # Opera Software AS
 AS60729 # Zwiebelfreunde e.V.
 AS208323 # Foundation for Applied Privacy
-AS8881 # 1&1 Versatel Deutschland GmbH
 AS202276 # IBOSS, INC
 AS213010 # GigaHostingServices OU
 AS35913 # DediPath
