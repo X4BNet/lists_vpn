@@ -760,7 +760,6 @@ AS37518 # Fiber Grid INC
 AS39832 # Opera Software AS
 AS60729 # Zwiebelfreunde e.V.
 AS208323 # Foundation for Applied Privacy
-AS8881 # 1&1 Versatel Deutschland GmbH
 AS202276 # IBOSS, INC
 AS213010 # GigaHostingServices OU
 AS35913 # DediPath
@@ -791,3 +790,4 @@ AS29593 # WOJCIECH LOREK ENDOR COMPUTERS
 AS15391 # FORMAT sp. z o.o.
 AS39566 # Smarthost sp. z o.o.
 AS48031 # PE Ivanov Vitaliy Sergeevich
+AS8560  # IONOS SE
