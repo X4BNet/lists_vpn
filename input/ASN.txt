@@ -791,3 +791,4 @@ AS15391 # FORMAT sp. z o.o.
 AS39566 # Smarthost sp. z o.o.
 AS48031 # PE Ivanov Vitaliy Sergeevich
 AS8560  # IONOS SE
+AS60362 # ALWAYSDATA SARL https://ipinfo.io/AS60362
