@@ -48,7 +48,7 @@ jobs:
       with:
         source_file: 'protonvpn.txt'
         destination_repo: '${{ github.repository }}'
-        destination_folder: '/input/ips/'
+        destination_folder: '/input/vpn/ips/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
         destination_branch: "main"

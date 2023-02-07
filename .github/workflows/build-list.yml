@@ -11,6 +11,10 @@ on:
 jobs:
   build_and_commit:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        list:
+         - vpn
     steps:
     - uses: actions/checkout@v2
     - name: Dependencies
@@ -21,7 +25,7 @@ jobs:
         curl https://iptoasn.com/data/ip2asn-v4.tsv.gz | gzip -d > /tmp/asndb.tsv
     - name: ASN -> IP Range
       run: |
-        cat $GITHUB_WORKSPACE/input/ASN.txt | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
+        cat "$GITHUB_WORKSPACE/input/${{matrix.list}}/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
           echo "Processing $asn"
           awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
@@ -32,7 +36,7 @@ jobs:
         perl ./helpers/cleanup.pl /tmp/asn-processed.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > /tmp/asn-cleaned.txt
 
         # Combine lists
-        cat $GITHUB_WORKSPACE/input/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        cat $GITHUB_WORKSPACE/input/${{matrix.list}}/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
         cat /tmp/asn-cleaned.txt /tmp/manual-processed.txt | sort -n > /tmp/ipv4.txt
 
         # Final cleanup
