@@ -1,0 +1,52 @@
+name: Take VPN Inputs and make a singular VPN output.
+on:
+  push:
+    paths:
+      - 'input/vpn/*.txt'
+    branches: 
+      - main
+  workflow_dispath:
+
+jobs:
+  build_and_commit:
+    runs_on: ubuntu-latest
+    steps:
+    - name: Merge VPN Lists
+      run: |
+        # Combine lists
+        cat $GITHUB_WORKSPACE/input/vpn/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        cat /tmp/manual-processed.txt | sort -n > /tmp/ipv4.txt
+
+        # Final cleanup
+        perl ./helpers/cleanup.pl /tmp/ipv4.txt > ipv4.txt
+    - name: Test Generated Lists
+      run: |
+        if [[ $(grep ^0. ipv4.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 0.0.0.0/8"
+          exit 1
+        fi
+        if [[ $(grep ^127. ipv4.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 12.0.0.1/8"
+          exit 1
+        fi
+
+        ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' ipv4.txt)
+        if [[ "$ips_covered" -lt 13970713 ]]; then
+          echo "Too few addresses covered"
+          exit 1
+        fi
+        if [[ "$ips_covered" -gt 439707136 ]]; then
+          echo "Too many addresses covered"
+          exit 1
+        fi
+    - name: Push Output tp VPNs/ipv4.txt
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        source_file: 'ipv4.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/output/vpns/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "main"
