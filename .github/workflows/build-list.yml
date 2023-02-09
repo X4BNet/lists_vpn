@@ -15,6 +15,7 @@ jobs:
       matrix:
         list:
          - vpn
+         - datacenter
     steps:
     - uses: actions/checkout@v2
     - name: Dependencies
@@ -29,6 +30,13 @@ jobs:
           echo "Processing $asn"
           awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
+
+        if [[ "${{matrix.list}}" == "datacenter" ]]; then
+          cat "$GITHUB_WORKSPACE/input/vpn/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
+            echo "Processing $asn"
+            awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
+          done
+        fi
     - name: Merge Lists
       run: |
         # Remove too small allocations from ASN list (anything less than a /24 can't be announced)
@@ -72,4 +80,18 @@ jobs:
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
         destination_branch: "experiment/split-list"
+    - name: Push Output of ipv4.txt
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      if: '${{ matrix.list == "datacenter" }}'
+      with:
+        source_file: 'ipv4.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "experiment/split-list"
+
+
 
