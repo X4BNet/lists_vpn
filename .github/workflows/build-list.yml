@@ -14,8 +14,12 @@ jobs:
     strategy:
       matrix:
         list:
-         - vpn
-         - datacenter
+         - name: vpn
+           validate_low:  13970713
+           validate_high: 43970713
+         - name: datacenter
+           validate_low:  13970713
+           validate_high: 43970713
     steps:
     - uses: actions/checkout@v2
     - name: Dependencies
@@ -26,12 +30,12 @@ jobs:
         curl https://iptoasn.com/data/ip2asn-v4.tsv.gz | gzip -d > /tmp/asndb.tsv
     - name: ASN -> IP Range
       run: |
-        cat "$GITHUB_WORKSPACE/input/${{matrix.list}}/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
+        cat "$GITHUB_WORKSPACE/input/${{matrix.list.name}}/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
           echo "Processing $asn"
           awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
 
-        if [[ "${{matrix.list}}" == "datacenter" ]]; then
+        if [[ "${{matrix.list.name}}" == "datacenter" ]]; then
           cat "$GITHUB_WORKSPACE/input/vpn/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
             echo "Processing $asn"
             awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n1"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
@@ -44,7 +48,7 @@ jobs:
         perl ./helpers/cleanup.pl /tmp/asn-processed.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > /tmp/asn-cleaned.txt
 
         # Combine lists
-        cat $GITHUB_WORKSPACE/input/${{matrix.list}}/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        cat $GITHUB_WORKSPACE/input/${{matrix.list.name}}/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
         cat /tmp/asn-cleaned.txt /tmp/manual-processed.txt | sort -n > /tmp/ipv4.txt
 
         # Final cleanup
@@ -61,12 +65,12 @@ jobs:
         fi
 
         ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' ipv4.txt)
-        if [[ "$ips_covered" -lt 13970713 ]]; then
-          echo "Too few addresses covered"
+        if [[ "$ips_covered" -lt ${{matrix.list_validate_low}} ]]; then
+          echo "Too few addresses covered ($ips_covered)"
           exit 1
         fi
-        if [[ "$ips_covered" -gt 439707136 ]]; then
-          echo "Too many addresses covered"
+        if [[ "$ips_covered" -gt ${{matrix.list_validate_high}} ]]; then
+          echo "Too many addresses covered ($ips_covered)"
           exit 1
         fi
     - name: Push Output of ipv4.txt
@@ -76,7 +80,7 @@ jobs:
       with:
         source_file: 'ipv4.txt'
         destination_repo: '${{ github.repository }}'
-        destination_folder: '/output/${{matrix.list}}/'
+        destination_folder: '/output/${{matrix.list.name}}/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
         destination_branch: "experiment/split-list"
@@ -84,7 +88,7 @@ jobs:
       uses: X4BNet/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
-      if: ${{ matrix.list == 'datacenter' }}
+      if: ${{ matrix.list.name == 'datacenter' }}
       with:
         source_file: 'ipv4.txt'
         destination_repo: '${{ github.repository }}'
