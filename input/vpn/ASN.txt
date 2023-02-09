@@ -1,0 +1,5 @@
+AS9009 # M247, GB (NordVPN)
+AS20448 # VPNtranet, LLC.
+AS209854 # Surfshark
+AS136787 # NordVPN (TEFINCOM S.A.)
+AS32751 # Octovpn / xbox VPN

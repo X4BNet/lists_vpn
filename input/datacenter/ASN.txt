@@ -20,7 +20,6 @@ AS8100 # ASN-QUADRANET-GLOBAL - QuadraNet, Inc, US
 AS8455 # ATOM86-AS ATOM86, NL
 AS8560 # ONEANDONE-AS Brauerstrasse 48, DE
 AS8972 # PLUSSERVER-AS, DE
-AS9009 # M247, GB (NordVPN)
 AS9370 # SAKURA-B SAKURA Internet Inc., JP
 AS10297 # ENET-2 - eNET Inc., US
 AS10439 # CARINET - CariNet, Inc., US
@@ -351,7 +350,6 @@ AS14576 # Hosting Solution Ltd.
 AS54290 # Hostwinds LLC.
 AS206898 # Server Hosting Pty Ltd
 AS60117 # Host Sailor Ltd.
-AS20448 # VPNtranet, LLC.
 AS201553 # Excom cloud S.L.
 AS54825 # Packet Host, Inc.
 AS31472 # VoiceHost Ltd
@@ -742,9 +740,6 @@ AS57363 # CDNvideo LLC
 AS46177 # SimpleCDN Technologies, Inc.
 AS62026 # SkyparkCDN Ltd.
 AS61107 # UNIVERSAL CDN (CYPRUS) LTD
-AS209854 # Surfshark
-AS136787 # NordVPN (TEFINCOM S.A.)
-AS32751 # Octovpn / xbox VPN
 AS35540 # OVH SAS
 AS59711 # HZ Hosting Ltd
 AS61046 # HZ Hosting Ltd
