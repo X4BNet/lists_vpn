@@ -12,6 +12,7 @@ jobs:
   build_and_commit:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         list:
          - name: vpn
@@ -65,11 +66,11 @@ jobs:
         fi
 
         ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' ipv4.txt)
-        if [[ "$ips_covered" -lt ${{matrix.list_validate_low}} ]]; then
+        if [[ "$ips_covered" -lt ${{matrix.list.validate_low}} ]]; then
           echo "Too few addresses covered ($ips_covered)"
           exit 1
         fi
-        if [[ "$ips_covered" -gt ${{matrix.list_validate_high}} ]]; then
+        if [[ "$ips_covered" -gt ${{matrix.list.validate_high}} ]]; then
           echo "Too many addresses covered ($ips_covered)"
           exit 1
         fi
