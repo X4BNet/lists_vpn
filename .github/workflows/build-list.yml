@@ -16,11 +16,11 @@ jobs:
       matrix:
         list:
          - name: vpn
-           validate_low:  13970713
-           validate_high: 43970713
+           validate_low:  900000
+           validate_high: 1000000
          - name: datacenter
-           validate_low:  13970713
-           validate_high: 43970713
+           validate_low:  100000000
+           validate_high: 150000000
     steps:
     - uses: actions/checkout@v2
     - name: Dependencies
