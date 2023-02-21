@@ -61,7 +61,7 @@ jobs:
           exit 1
         fi
         if [[ $(grep ^127. ipv4.txt | wc -l) != "0" ]]; then
-          echo "Lists can not contain 12.0.0.1/8"
+          echo "Lists can not contain 127.0.0.1/8"
           exit 1
         fi
 
