@@ -787,3 +787,5 @@ AS39566 # Smarthost sp. z o.o.
 AS48031 # PE Ivanov Vitaliy Sergeevich
 AS8560  # IONOS SE
 AS60362 # ALWAYSDATA SARL https://ipinfo.io/AS60362
+AS16652 # Riseup Networks https://www.ipqualityscore.com/asn-details/AS16652/riseup-networks
+AS9009 # M247 Europe SRL
