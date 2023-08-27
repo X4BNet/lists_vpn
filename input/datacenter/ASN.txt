@@ -18,7 +18,7 @@ AS7979 # SERVERS - Servers.com, Inc., US
 AS8075 # MICROSOFT-CORP-MSN-AS-BLOCK - Microsoft Corporation, US
 AS8100 # ASN-QUADRANET-GLOBAL - QuadraNet, Inc, US
 AS8455 # ATOM86-AS ATOM86, NL
-AS8560 # ONEANDONE-AS Brauerstrasse 48, DE
+AS8560 # ONEANDONE-AS / IONOS, DE
 AS8972 # PLUSSERVER-AS, DE
 AS9370 # SAKURA-B SAKURA Internet Inc., JP
 AS10297 # ENET-2 - eNET Inc., US
@@ -185,7 +185,7 @@ AS40676 # Psychz Networks, US
 AS40824 # WZCOM-US - WZ Communications Inc., US
 AS40861 # PARAD-40-ASN - Paradise Networks LLC, US
 AS41653 # AQUARAY, FR
-AS41665 # HOSTING-AS http://hosting.ua, UA
+AS41665 # HOSTING-AS hosting.ua, UA
 AS42160 # LCPDCO LCP AS dc oostkamp, BE
 AS42331 # FREEHOST, UA
 AS42473 # ANEXIA-AS A-9020 # Klagenfurt, AT
@@ -219,7 +219,6 @@ AS47588 # TELENETRONICS-AS, RS
 AS49349 # DOTSI, PT
 AS49367 # ASSEFLOW Amsterdam Internet Exchange (AMS-IX), IT
 AS49453 # GLOBALLAYER, NL
-AS49505 # SELECTEL, RU
 AS49532 # SERVERHUB-, DE
 AS49544 # I3DNET, NL
 AS49981 # WORLDSTREAM, NL
@@ -282,7 +281,7 @@ AS60567 # DATACLUB-, SE
 AS60781 # LEASEWEB-NL Netherlands, NL
 AS61102 # INTERHOST, IL
 AS61157 # PLUSSERVER-ASN1, DE
-AS61317 # ASDETUK http://www.host1plus.com, GB
+AS61317 # ASDETUK host1plus.com, GB
 AS61440 # Digital Energy Technologies Chile SpA, CL
 AS62217 # VOOSERVERS, GB
 AS62240 # CLOUVIDER London, United Kingdom, GB
@@ -312,7 +311,7 @@ AS198310 # PALLADA-AS, RU
 AS198605 # AVAST Software s.r.o., CZ
 AS199653 # ARUBAFR-AS, FR
 AS199883 # ARUBACLOUDLTD-ASN, GB
-AS200019 # ASCLOUDATA, MD
+AS200019 # ASCLOUDATA, ALEXHOST, MD
 AS200039 # HYDRACOM-AS, GB
 AS201011 # NETZBETRIEB-GMBH, DE
 AS201525 # HZ-CA-AS, BG
@@ -356,15 +355,13 @@ AS31472 # VoiceHost Ltd
 AS8556 # Levantis Hosting GmbH
 AS29119 # ServiHosting Networks S.L.
 AS60476 # MRG Hosting B.V.
-AS25532 # .masterhost autonomous system
-AS54500 # 18779 - EGIHosting
+AS25532 # masterhost autonomous system
 AS49949 # 24 Solutions AB
 AS51698 # Activehost RU Ltd.
 AS42442 # Adacor Hosting GmbH
 AS11274 # Adhost Internet Advertising, LLC
 AS57345 # ADM-HOST di Ratti Alessandro
 AS54817 # ALDEN HOSTING LLC
-AS200019 # ALEXHOST SRL
 AS53342 # All Nine Hosting, Inc.
 AS33569 # ALLHOSTSHOP.COM
 AS201983 # Ansluten Hosting i Sverige AB
@@ -401,7 +398,6 @@ AS29748 # Carpathia Hosting, Inc.
 AS35974 # Carpathia Hosting, Inc.
 AS262990 # CENTER HOSTING TECNOLOGIA EIRELI
 AS43021 # Certit Hosting Handelsbolag
-AS42695 # City Network Hosting AB
 AS39704 # CJ2 Hosting B.V.
 AS62899 # Clarity Web Hosting Inc.
 AS53281 # Clearpath Hosting
@@ -449,7 +445,6 @@ AS198347 # Game-Hosting GH AB
 AS40728 # GearHost, Inc.
 AS18120 # Gemini Software Solutions (P) Ltd. Hosting Services, India
 AS53914 # Genesis Hosting Solutions, LLC
-AS12586 # GHOSTnet GmbH
 AS55720 # Gigabit Hosting Sdn Bhd
 AS27640 # GIGAS HOSTING USA, LLC
 AS62563 # GLOBALTELEHOST Corp.
@@ -465,7 +460,6 @@ AS46873 # Host Color
 AS14384 # HOST DESIGNS, LLC
 AS54555 # Host Duplex, LLC
 AS263237 # HOST E.I.R.L.
-AS20773 # Host Europe GmbH
 AS53918 # Host Hotels and Resorts, L.P.
 AS4851 # Host Networks
 AS32306 # Host NIT Inc
@@ -481,7 +475,6 @@ AS33260 # Hostasaurus, Inc.
 AS24220 # Hostcentral
 AS52347 # HOSTCLICK, de DUCA GRACIELA MIRTA
 AS45486 # HostCorp Internet
-AS33182 # HostDime.com, Inc.
 AS53055 # HostDime.com.br Data Center
 AS51290 # HOSTEAM S.C. TOMASZ GROSZEWSKI BARTOSZ WASZAK LUKASZ GROSZEWSKI
 AS132225 # Hosted Continuity Pty Ltd
@@ -495,8 +488,6 @@ AS42399 # Hosting Center LLC
 AS47385 # Hosting center Ltd.
 AS40539 # Hosting Consulting, Inc
 AS42244 # Hosting Operator eServer.ru Ltd.
-AS29302 # Hosting Services Inc
-AS10929 # Netelligent Hosting Services Inc.
 AS47549 # Hosting Systems Ltd
 AS200147 # Hosting Techniques Limited
 AS393326 # Hosting4Biz
@@ -539,7 +530,6 @@ AS50926 # Infortelecom Hosting, S.L.
 AS201634 # Ingram Micro Hosting B.V.
 AS22611 # InMotion Hosting, Inc.
 AS54641 # InMotion Hosting, Inc.
-AS61102 # Interhost Communication Solutions Ltd.
 AS132071 # Interhost Pacific Pty Ltd t/a Intervolve
 AS10207 # Interhost Pacific Pty Ltd t/a Intervolve.
 AS45577 # Interhost Pacific Pty Ltd t/a Intervolve.
@@ -584,7 +574,6 @@ AS201597 # NE-IT Hosting B.V.
 AS28997 # Nedcomp Hosting B.V.
 AS60800 # Netwise Hosting Ltd.
 AS33322 # Network Data Center Host, Inc.
-AS38001 # NewMedia Express Pte Ltd. Singapore Web Hosting Service Provider
 AS199129 # Next point Host EOOD.
 AS197372 # NMA Hosting Solutions BV
 AS57752 # NORMHOST SARL
@@ -595,7 +584,6 @@ AS34541 # Online Solutions Hosting Services
 AS196678 # OOO Hosterov
 AS43198 # Outsourcery Hosting LTD
 AS47625 # Paul David Hughes trading as Hosting Systems
-AS42331 # PE Freehost
 AS62049 # Penta Corporate Hosting Ltd
 AS35295 # PeterHost.Ru Hosting Provider at SPb
 AS42311 # PGHOSTING-DRESDEN-BACKBONE
@@ -614,15 +602,10 @@ AS31590 # Rackhosting.com ApS
 AS10532 # Rackspace Hosting
 AS22720 # Rackspace Hosting
 AS27357 # Rackspace Hosting
-AS33070 # Rackspace Hosting
-AS45187 # Rackspace IT Hosting AS IT Hosting Provider Hong Kong
 AS7595 # Readyspace Network Pte Ltd, Hosted Solutions Provider,Singapore
 AS26481 # Rebel Hosting
 AS29713 # Reliable Hosting Services
-AS13926 # Reliablehosting.com
-AS54203 # Reliablehosting.com
 AS62651 # Reliablehosting.com
-AS63128 # Reliablehosting.com
 AS62838 # Reprise Hosting
 AS30849 # Research-and-production company Host Ltd
 AS14987 # Rethem Hosting LLC
@@ -689,7 +672,6 @@ AS27229 # Webhosting.Net, Inc.
 AS48093 # Webland Hosting AB
 AS42465 # Websense Hosted Security - Anycast network
 AS7598 # Websense Hosted Security - AsiaPac region
-AS30475 # WeHostWebSites.com
 AS55229 # White Sands Hosting
 AS7349 # Windstream Hosted Solutions, LLC
 AS33251 # Windstream Hosted Solutions, LLC
@@ -718,9 +700,8 @@ AS201709 # HanDS Hanse Datacenter Services GmbH
 AS53221 # INTERNET DATACENTER
 AS198432 # Ipcore Datacenters S.L
 AS51241 # Iran Post Company-Tehran DataCenter
-AS19969 # Joe's Datacenter, LLC
 AS56799 # Jordens Datacenter NV
-AS26277 # Las Vegas NV Datacenter]
+AS26277 # Las Vegas NV Datacenter
 AS58113 # LIR DATACENTER TELECOM SRL
 AS28333 # Local Datacenter Soluções em Comunicação Ltda.
 AS42120 # MODIT Datacenter Informatikai es Szolgaltato KFT
@@ -785,6 +766,26 @@ AS29593 # WOJCIECH LOREK ENDOR COMPUTERS
 AS15391 # FORMAT sp. z o.o.
 AS39566 # Smarthost sp. z o.o.
 AS48031 # PE Ivanov Vitaliy Sergeevich
+AS60362 # ALWAYSDATA SARL
+AS61138 # Zappie Host LLC
+AS206216 # Advin Services LLC
+AS210779 # BREEZLE LLC
+AS149020 # WebHorizon Internet Services
+AS203758 # eugamehost.com
+AS399804 # Hostodo
+AS23470 # ReliableSite.Net LLC
+AS199785 # Cloud Hosting Solutions, Limited
+AS33696 # NextArray LLC
+AS34927 # iFog GmbH
+AS30836 # 23VNet Kft
+AS210329 # Kamatera Inc
+AS40476 # Scala Hosting LLC
+AS42532 # SIA VEESP
+AS51862 # IONOS SE
+AS26347 # New Dream Network, LLC
 AS8560  # IONOS SE
 AS60362 # ALWAYSDATA SARL https://ipinfo.io/AS60362
 AS26548 # PureVoltage https://ipinfo.io/AS26548
+AS52000 # MIRholding https://ipinfo.io/AS52000
+AS16652 # Riseup Networks www.ipqualityscore.com/asn-details/AS16652/riseup-networks
+AS9009 # M247 Europe SRL
