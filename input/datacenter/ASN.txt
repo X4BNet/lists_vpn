@@ -785,6 +785,7 @@ AS51862 # IONOS SE
 AS26347 # New Dream Network, LLC
 AS8560  # IONOS SE
 AS60362 # ALWAYSDATA SARL https://ipinfo.io/AS60362
+AS26548 # PureVoltage https://ipinfo.io/AS26548
 AS52000 # MIRholding https://ipinfo.io/AS52000
 AS16652 # Riseup Networks www.ipqualityscore.com/asn-details/AS16652/riseup-networks
 AS9009 # M247 Europe SRL
