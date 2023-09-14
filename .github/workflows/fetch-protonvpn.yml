@@ -33,7 +33,7 @@ jobs:
         fi
 
         ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' protonvpn.txt)
-        if [[ "$ips_covered" -lt 1000 ]]; then
+        if [[ "$ips_covered" -lt 2000 ]]; then
           echo "Too few addresses covered ($ips_covered)"
           exit 1
         fi
