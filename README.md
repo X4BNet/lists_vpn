@@ -12,6 +12,10 @@ This list doesn't list _all_ VPNs, but should list the vast majority of common o
 - **output/datacenter/ipv4.txt:** this list is for VPNs and Datacenters. Anything that is "not an eyeball network" directly.
 - **ipv4.txt:** This is a legacy path for the datacenters list (to be removed in the future, use the above)
 
+## Conversions
+
+- **helpers/subnet-to-ip-expansion.sh:** Converting IPv4 subnets to pure IPv4 addresses
+
 # How to contribute
 
 Please open an issue if you know a VPN provider not listed here _and_ have documentation / evidence. Contributions of data are welcome.
