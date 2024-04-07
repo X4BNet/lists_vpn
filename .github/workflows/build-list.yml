@@ -33,13 +33,13 @@ jobs:
       run: |
         cat "$GITHUB_WORKSPACE/input/${{matrix.list.name}}/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
           echo "Processing $asn"
-          awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
+          awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n+2"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
         done
 
         if [[ "${{matrix.list.name}}" == "datacenter" ]]; then
           cat "$GITHUB_WORKSPACE/input/vpn/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read asn; do
             echo "Processing $asn"
-            awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
+            awk '{if($3 == '${asn:2}') print "ipcalc -rn "$1"-"$2" | tail -n+2"}' /tmp/asndb.tsv | bash >> /tmp/asn-processed.txt
           done
         fi
     - name: Merge Lists
