@@ -787,3 +787,4 @@ AS52000 # MIRholding https://ipinfo.io/AS52000
 AS16652 # Riseup Networks www.ipqualityscore.com/asn-details/AS16652/riseup-networks
 AS9009 # M247 Europe SRL
 AS42675 # https://obe.net/hosting
+AS329184 # Host Africa (Pty) Ltd https://ipinfo.io/AS329184
