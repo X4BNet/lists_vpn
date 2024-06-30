@@ -28,17 +28,17 @@ jobs:
           exit 1
         fi
         if [[ $(grep ^127. protonvpn.txt | wc -l) != "0" ]]; then
-          echo "Lists can not contain 12.0.0.1/8"
+          echo "Lists can not contain 127.0.0.1/8"
           exit 1
         fi
 
         ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' protonvpn.txt)
-        if [[ "$ips_covered" -lt 1000 ]]; then
+        if [[ "$ips_covered" -lt 3000 ]]; then
           echo "Too few addresses covered ($ips_covered)"
           exit 1
         fi
-        if [[ "$ips_covered" -gt 3000 ]]; then
-          echo "Too many addresses covered"
+        if [[ "$ips_covered" -gt 6000 ]]; then
+          echo "Too many addresses covered ($ips_covered)"
           exit 1
         fi
     - name: Push Output of protonvpn.txt
