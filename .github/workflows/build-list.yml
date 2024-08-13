@@ -16,8 +16,8 @@ jobs:
       matrix:
         list:
          - name: vpn
-           validate_low:  850000
-           validate_high: 1500000
+           validate_low:  1000000
+           validate_high: 2000000
          - name: datacenter
            validate_low:  150000000
            validate_high: 250000000
