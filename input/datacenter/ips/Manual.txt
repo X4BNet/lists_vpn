@@ -1,2 +1,0 @@
-# Manually added netblocks
-# Comment description manditory
