@@ -788,3 +788,4 @@ AS9009 # M247 Europe SRL
 AS42675 # https://obe.net/hosting
 AS329184 # Host Africa (Pty) Ltd https://ipinfo.io/AS329184
 AS212238 # CDNEXT, GB
+AS141995 # CAPL-AS-AP Contabo Asia Private Limited https://asn.ipinfo.app/AS141995
