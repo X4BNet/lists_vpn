@@ -797,3 +797,4 @@ AS33905 # Akami AMS - https://asn.ipinfo.app/AS33905
 AS34164 # Akami London - https://asn.ipinfo.app/AS34164
 AS35994 # Akami AS - https://asn.ipinfo.app/AS35994
 AS36183 # Akami AS - https://asn.ipinfo.app/AS36183
+AS197540 # NetCup - https://asn.ipinfo.app/AS197540
