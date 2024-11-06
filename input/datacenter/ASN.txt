@@ -802,3 +802,6 @@ AS36183 # Akami AS - https://asn.ipinfo.app/AS36183
 AS197540 # NetCup - https://asn.ipinfo.app/AS197540
 AS197540 # NetCup - https://asn.ipinfo.app/AS197540
 AS396982 # Google Cloud Platform, US
+AS213230 # Hetzner Cloud2, DE
+AS212317 # Hetzner Cloud3, DE
+AS215859 # Hetzner Cloud4, DE
