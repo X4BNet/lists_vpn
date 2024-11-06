@@ -788,4 +788,13 @@ AS9009 # M247 Europe SRL
 AS42675 # https://obe.net/hosting
 AS329184 # Host Africa (Pty) Ltd https://ipinfo.io/AS329184
 AS212238 # CDNEXT, GB
+AS12222 # Akami - https://asn.ipinfo.app/AS12222
+AS16625 # Akami-AS - https://asn.ipinfo.app/AS16625
+AS20940 # Akami International - https://asn.ipinfo.app/AS20940
+AS21342 # Akami Internation #2 - https://asn.ipinfo.app/AS21342
+AS24319 # Akami Tokyo - https://asn.ipinfo.app/AS24319
+AS33905 # Akami AMS - https://asn.ipinfo.app/AS33905
+AS34164 # Akami London - https://asn.ipinfo.app/AS34164
+AS35994 # Akami AS - https://asn.ipinfo.app/AS35994
+AS36183 # Akami AS - https://asn.ipinfo.app/AS36183
 AS197540 # NetCup - https://asn.ipinfo.app/AS197540
