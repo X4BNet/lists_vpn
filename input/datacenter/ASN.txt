@@ -800,3 +800,5 @@ AS34164 # Akami London - https://asn.ipinfo.app/AS34164
 AS35994 # Akami AS - https://asn.ipinfo.app/AS35994
 AS36183 # Akami AS - https://asn.ipinfo.app/AS36183
 AS197540 # NetCup - https://asn.ipinfo.app/AS197540
+AS216071 # VDSina, AE
+AS48282 # VDSina, RU
