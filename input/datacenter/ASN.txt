@@ -788,6 +788,7 @@ AS9009 # M247 Europe SRL
 AS42675 # https://obe.net/hosting
 AS329184 # Host Africa (Pty) Ltd https://ipinfo.io/AS329184
 AS212238 # CDNEXT, GB
+AS62005 # BlueVPS OU
 AS141995 # CAPL-AS-AP Contabo Asia Private Limited https://asn.ipinfo.app/AS141995
 AS12222 # Akami - https://asn.ipinfo.app/AS12222
 AS16625 # Akami-AS - https://asn.ipinfo.app/AS16625
