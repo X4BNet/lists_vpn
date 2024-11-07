@@ -823,3 +823,14 @@ AS396190 # Leaseweb
 AS396362 # Leaseweb
 AS132203 # Tencent
 AS142036 # Hosteons
+AS134963 # Alibaba
+AS214036 # Ultrahost
+AS44803 # Webdock.io
+AS12200 # Rackspace
+AS15395 # Rackspace
+AS19994 # Rackspace
+AS58683 # Rackspace
+AS36007 # Kamatera
+AS64022 # Kamatera
+AS210329 # Kamatera
+AS206092 # internet.lv (XS Usenet, ExpressVPN, etc)
