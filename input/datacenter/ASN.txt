@@ -267,7 +267,7 @@ AS59504 # CYBERTECH-AS, RU
 AS59729 # ITL-, BG
 AS59764 # ATLANTIC-NET, GB
 AS60011 # BHOST, GB
-AS60068 # CDN77, GB
+AS60068 # CDN77, GB (Datacamp)
 AS60118 # ALISTAR-AS, RO
 AS60404 # LITESERVER, NL
 AS60485 # AS-60485, EE
@@ -805,3 +805,21 @@ AS396982 # Google Cloud Platform, US
 AS213230 # Hetzner Cloud2, DE
 AS212317 # Hetzner Cloud3, DE
 AS215859 # Hetzner Cloud4, DE
+AS44477 # Stark Industries (kerbs)
+AS55990 # Huawei
+AS19148 # Leaseweb
+AS27411 # Leaseweb
+AS30633 # Leaseweb
+AS59253 # Leaseweb
+AS60781 # Leaseweb
+AS133752 # Leaseweb
+AS134351 # Leaseweb
+AS136988 # Leaseweb
+AS205544 # Leaseweb
+AS393886 # Leaseweb
+AS394380 # Leaseweb
+AS395954 # Leaseweb
+AS396190 # Leaseweb
+AS396362 # Leaseweb
+AS132203 # Tencent
+AS142036 # Hosteons
