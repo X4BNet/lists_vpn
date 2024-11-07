@@ -834,3 +834,10 @@ AS36007 # Kamatera
 AS64022 # Kamatera
 AS210329 # Kamatera
 AS206092 # internet.lv (XS Usenet, ExpressVPN, etc)
+AS57433 # Intercolo
+AS212861 # Intercolo
+AS64286 # LogicWeb
+AS216071 # VDSINA 
+AS48282 # VDSINA
+AS31898 # Oracle cloud
+AS58065 # Fiber Grid/PacketExchange
