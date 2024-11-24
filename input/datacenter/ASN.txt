@@ -850,4 +850,6 @@ AS208795 # Yandex
 AS208932 # Teleglobal
 AS197155 # Artnet
 AS200088 # Artnet
-
+AS53667 # FranTech Solutions
+AS141039 # PacketHub
+AS147049 # PacketHub
