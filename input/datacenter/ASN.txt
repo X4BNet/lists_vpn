@@ -841,13 +841,10 @@ AS48282 # VDSINA
 AS31898 # Oracle cloud
 AS58065 # Fiber Grid/PacketExchange
 AS137409 # Global Secure Layer Data Center
-AS203214 # Hulum Data Center
-AS46023 # Quantum Tera Network
 AS52468 # UFINET 
 AS265620 # UFINET
 AS200350 # Yandex
 AS208795 # Yandex
-AS208932 # Teleglobal
 AS197155 # Artnet
 AS200088 # Artnet
 AS53667 # FranTech Solutions
