@@ -19,8 +19,8 @@ jobs:
            validate_low:  1500000
            validate_high: 3000000
          - name: datacenter
-           validate_low:  200000000
-           validate_high: 300000000
+           validate_low:  250000000
+           validate_high: 400000000
     steps:
     - uses: actions/checkout@v2
     - name: Dependencies
