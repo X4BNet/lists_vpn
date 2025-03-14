@@ -1,0 +1,54 @@
+name: "Fetch: MullvadVPN"
+on:
+  push:
+    paths:
+    - '.github/workflows/fetch-mullvadvpn.yml'
+  schedule:
+    - cron:  '30 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  build_and_commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Dependencies
+      run: |
+        sudo apt-get install jq
+    - name: Download and process
+      run: |
+        curl -s https://api.mullvad.net/www/relays/all | jq -r '.[] | .ipv4_addr_in' | sort -n | uniq > /tmp/mullvadvpn.txt
+    - name: Merge Lists
+      run: |
+        perl ./helpers/cleanup.pl /tmp/mullvadvpn.txt > mullvadvpn.txt
+    - name: Test generated Lists
+      run: |
+        if [[ $(grep ^0. mullvadvpn.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 0.0.0.0/8"
+          exit 1
+        fi
+        if [[ $(grep ^127. mullvadvpn.txt| wc -l) != "0" ]]; then
+          echo "Lists can not contain 127.0.0.1/8"
+          exit 1
+        fi
+
+        ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' mullvadvpn.txt)
+        if [[ "$ips_covered" -lt 6000 ]]; then
+          echo "Too few addresses covered ($ips_covered)"
+          exit 1
+        fi
+        if [[ "$ips_covered" -gt 10000 ]]; then
+          echo "Too many addresses covered ($ips_covered)"
+          exit 1
+        fi
+    - name: Push Output of mullvadvpn.txt
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        source_file: 'mullvadvpn.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/input/vpn/ips/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "main"
