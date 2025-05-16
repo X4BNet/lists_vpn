@@ -5,3 +5,4 @@ AS136787 # NordVPN (TEFINCOM S.A.)
 AS32751 # Octovpn / xbox VPN
 AS212238 # Datacamp VPN?
 AS50525 # Privado VPN
+AS207137 # Packethub (NordVPN)
