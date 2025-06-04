@@ -6,3 +6,4 @@ AS32751 # Octovpn / xbox VPN
 AS212238 # Datacamp VPN?
 AS50525 # Privado VPN
 AS207137 # Packethub (NordVPN)
+AS398391 # Perimeter 81 LLC (Checkpoint)
