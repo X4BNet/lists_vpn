@@ -7,3 +7,4 @@ AS212238 # Datacamp VPN?
 AS50525 # Privado VPN
 AS207137 # Packethub (NordVPN)
 AS60729 # Tor Servers (Tor exit nodes)
+AS398391 # Checkpoint VPN
