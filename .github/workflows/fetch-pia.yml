@@ -1,0 +1,53 @@
+---
+
+name: "Fetch: Private-Internet-Access"
+on:
+  push:
+    paths:
+    - '.github/workflows/fetch-pia.yml'
+  schedule:
+    - cron:  '30 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  build_and_commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download and process
+      run: |
+        curl -s https://raw.githubusercontent.com/Lars-/PIA-servers/refs/heads/master/export.csv | tail -n +2 | cut -d ',' -f1 | sort | uniq > /tmp/pia.txt
+    - name: Merge Lists
+      run: |
+        perl ./helpers/cleanup.pl /tmp/pia.txt > pia.txt
+    - name: Test generated Lists
+      run: |
+        if [[ $(grep ^0. pia.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain 0.0.0.0/8"
+          exit 1
+        fi
+        if [[ $(grep ^127. pia.txt| wc -l) != "0" ]]; then
+          echo "Lists can not contain 127.0.0.1/8"
+          exit 1
+        fi
+
+        ips_covered=$(awk -F/ 'BEGIN{a=0}{if($2==""){a+=1}else{a+=2^(32-$2)}}END{print a}' pia.txt)
+        if [[ "$ips_covered" -lt 500 ]]; then
+          echo "Too few addresses covered ($ips_covered)"
+          exit 1
+        fi
+        if [[ "$ips_covered" -gt 2000 ]]; then
+          echo "Too many addresses covered ($ips_covered)"
+          exit 1
+        fi
+    - name: Push Output of pia.txt
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        source_file: 'pia.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/input/vpn/ips/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "main"
