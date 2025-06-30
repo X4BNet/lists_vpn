@@ -8,3 +8,5 @@ AS50525 # Privado VPN
 AS207137 # Packethub (NordVPN)
 AS60729 # Tor Servers (Tor exit nodes)
 AS398391 # Checkpoint VPN
+AS401401 # Unredacted
+AS401720 # Unredacted
