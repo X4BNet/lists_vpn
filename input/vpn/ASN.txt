@@ -10,3 +10,5 @@ AS60729 # Tor Servers (Tor exit nodes)
 AS398391 # Checkpoint VPN
 AS401401 # Unredacted
 AS401720 # Unredacted
+AS200373 # 3xktech
+AS198571 # 3xktech
