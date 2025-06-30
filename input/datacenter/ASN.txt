@@ -887,3 +887,4 @@ AS138608 # CLOUDHOST-AS-AP Cloud Host Pte Ltd, SG
 AS13378 # Qingye Cloud, US
 AS63567 # Suqian Pugongying Network Service Co Ltd, CN
 AS210731 # Forening for DotSrc, DE
+AS211619 # MAXKO, HR
