@@ -10,7 +10,7 @@ This list doesn't list _all_ VPNs, but should list the vast majority of common o
 
 - **output/vpn/ipv4.txt:** this list is strictly just known VPN networks. A small overlap with Datacenter networks is possible (e.g if it isnt possible to seperate) however most datacenters will not be in this list
 - **output/datacenter/ipv4.txt:** this list is for VPNs and Datacenters. Anything that is "not an eyeball network" directly.
-- **ipv4.txt:** This is a legacy path for the datacenters list (to be removed in the future, use the above)
+- **ipv4.txt:** This is a legacy path for the datacenters list (to be removed in 2026, use the above)
 
 ## Conversions
 
