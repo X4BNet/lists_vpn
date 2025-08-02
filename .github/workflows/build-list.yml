@@ -49,7 +49,7 @@ jobs:
         perl ./helpers/cleanup.pl /tmp/asn-processed.txt | grep -E '/(2[0-4]|1[0-9]|[0-9])$' > /tmp/asn-cleaned.txt
 
         # Combine lists
-        cat $GITHUB_WORKSPACE/input/${{matrix.list.name}}/ips/*.txt | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
+        find $GITHUB_WORKSPACE/input/${{matrix.list.name}}/ips/ -type f -name "*.txt" ! -iname "*ipv6.txt" ! -iname "*IPv6.txt" -exec cat {} + | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed.txt
         cat /tmp/asn-cleaned.txt /tmp/manual-processed.txt | sort -n > /tmp/ipv4.txt
 
         # Final cleanup
