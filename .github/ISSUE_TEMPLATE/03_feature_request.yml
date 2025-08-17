@@ -1,0 +1,34 @@
+name: Feature or Script Request
+description: Suggest a new feature or script for the project.
+title: "[Feature] <short description>"
+labels:
+  - feature-request
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature or script request
+      description: Describe the feature or script you want to see.
+    validations:
+      required: true
+  - type: textarea
+    id: feature-value
+    attributes:
+      label: Problem solved or value added
+      description: What problem does it solve or what value does it add?
+    validations:
+      required: true
+  - type: textarea
+    id: feature-examples
+    attributes:
+      label: Relevant examples or references
+      description: Any relevant examples or references?
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context, screenshots, or information here.
+    validations:
+      required: false

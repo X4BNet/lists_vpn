@@ -1,0 +1,41 @@
+name: Add ASN
+description: Request to add a new ASN to the list.
+title: "[ASN Addition] <short description>"
+labels:
+  - asn
+body:
+  - type: input
+    id: asn-add
+    attributes:
+      label: ASN(s) to add
+      description: List the ASN(s) to add (e.g. AS12345).
+    validations:
+      required: true
+  - type: input
+    id: provider-name
+    attributes:
+      label: Provider name
+      description: Name of the provider for the ASN(s) to add.
+    validations:
+      required: false
+  - type: textarea
+    id: add-evidence
+    attributes:
+      label: Evidence/documentation
+      description: Links, references, or explanation why this ASN should be included. Example IP addresses.
+    validations:
+      required: true
+  - type: checkboxes
+    id: asn-category
+    attributes:
+      label: Category
+      options:
+        - label: VPN
+        - label: Datacenter
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context, screenshots, or information here.
+    validations:
+      required: false
