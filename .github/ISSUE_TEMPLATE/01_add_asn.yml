@@ -32,6 +32,15 @@ body:
       options:
         - label: VPN
         - label: Datacenter
+  - type: checkboxes
+    id: asn-category
+    attributes:
+      label: Services
+      options:
+        - label: Hosting
+        - label: Transit
+        - label: ISP (Residential / Biz)
+        - label: VPN/Other
   - type: textarea
     id: additional-context
     attributes:
