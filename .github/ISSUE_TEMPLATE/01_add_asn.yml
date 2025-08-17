@@ -33,7 +33,7 @@ body:
         - label: VPN
         - label: Datacenter
   - type: checkboxes
-    id: asn-category
+    id: asn-services
     attributes:
       label: Services
       options:
