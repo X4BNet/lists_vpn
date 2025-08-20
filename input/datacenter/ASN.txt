@@ -889,3 +889,4 @@ AS63567 # Suqian Pugongying Network Service Co Ltd, CN
 AS210731 # Forening for DotSrc, DE
 AS211619 # MAXKO, HR
 AS152390 # https://github.com/X4BNet/lists_vpn/issues/213
+AS204957 # https://github.com/X4BNet/lists_vpn/issues/230
