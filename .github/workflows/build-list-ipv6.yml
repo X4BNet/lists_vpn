@@ -1,0 +1,114 @@
+name: Build IPv6 Database Update
+on:
+  push:
+    paths:
+    - 'input/**'
+    - '.github/workflows/build-list-ipv6.yml'
+  schedule:
+    - cron:  '50 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  build_and_commit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        list:
+         - name: vpn
+           validate_low:  1
+           validate_high: 5000000000000
+         - name: datacenter
+           validate_low:  1
+           validate_high: 500000000000000
+    steps:
+    - uses: actions/checkout@v2
+    - name: Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3 python3-pip
+    - name: Downloading IPv6 ASN database
+      run: |
+        curl https://iptoasn.com/data/ip2asn-v6.tsv.gz | gzip -d > /tmp/asndb-ipv6.tsv
+    - name: ASN -> IPv6 Range
+      run: |
+        rm -f /tmp/asn-processed-ipv6.txt
+        cat "$GITHUB_WORKSPACE/input/${{matrix.list.name}}/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read -r asn; do
+          echo "Processing $asn for IPv6"
+          awk -v asn="${asn:2}" '$3 == asn {print $1"-"$2}' /tmp/asndb-ipv6.tsv | while read -r range; do
+            start=$(echo "$range" | cut -d'-' -f1)
+            end=$(echo "$range" | cut -d'-' -f2)
+            python3 -c "import ipaddress; import sys; start=ipaddress.IPv6Address('$start'); end=ipaddress.IPv6Address('$end'); nets=list(ipaddress.summarize_address_range(start, end)); [print(str(net)) for net in nets]" >> /tmp/asn-processed-ipv6.txt
+          done
+        done
+
+        if [[ "${{matrix.list.name}}" == "datacenter" ]]; then
+          cat "$GITHUB_WORKSPACE/input/vpn/ASN.txt" | grep -v '^#' | awk '{print $1}' | grep '^AS' | while read -r asn; do
+            echo "Processing $asn for IPv6 (datacenter includes VPN)"
+            awk -v asn="${asn:2}" '$3 == asn {print $1"-"$2}' /tmp/asndb-ipv6.tsv | while read -r range; do
+              start=$(echo "$range" | cut -d'-' -f1)
+              end=$(echo "$range" | cut -d'-' -f2)
+              python3 -c "import ipaddress; import sys; start=ipaddress.IPv6Address('$start'); end=ipaddress.IPv6Address('$end'); nets=list(ipaddress.summarize_address_range(start, end)); [print(str(net)) for net in nets]" >> /tmp/asn-processed-ipv6.txt
+            done
+          done
+        fi
+    - name: Merge IPv6 Lists
+      run: |
+        # Remove too small allocations from ASN list (anything less than a /64 for IPv6)
+        # IPv6 typically uses /64 as the smallest routable prefix for end sites
+        perl ./helpers/cleanup-ipv6.pl /tmp/asn-processed-ipv6.txt | grep -E '/([0-9]|[1-5][0-9]|6[0-4])$' > /tmp/asn-cleaned-ipv6.txt
+
+        # Combine lists - look for Manual-ipv6.txt files
+        find $GITHUB_WORKSPACE/input/${{matrix.list.name}}/ips/ -name "*ipv6*.txt" -o -name "*IPv6*.txt" | xargs cat | grep -v '^#' | awk '{print $1}' | sed '/^$/d' > /tmp/manual-processed-ipv6.txt
+        cat /tmp/asn-cleaned-ipv6.txt /tmp/manual-processed-ipv6.txt | sort > /tmp/ipv6.txt
+
+        # Final cleanup
+        perl ./helpers/cleanup-ipv6.pl /tmp/ipv6.txt > ipv6.txt
+    - name: Test generated IPv6 Lists
+      run: |
+        # Check for loopback addresses (::1/128)
+        if [[ $(grep -i "^::1" ipv6.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain IPv6 loopback addresses"
+          exit 1
+        fi
+        
+        # Check for link-local addresses (fe80::/10)
+        if [[ $(grep -i "^fe8" ipv6.txt | wc -l) != "0" ]]; then
+          echo "Lists can not contain IPv6 link-local addresses"
+          exit 1
+        fi
+
+        # Estimate IPv6 addresses covered (simplified calculation)
+        ips_covered=$(python3 -c "total=0; [total:=total+min(2**(128-int(line.strip().split('/')[1])), 2**32) if '/' in line.strip() else total+1 for line in open('ipv6.txt') if line.strip() and not line.startswith('#')]; print(int(total))")
+        
+        if [[ "$ips_covered" -lt ${{matrix.list.validate_low}} ]]; then
+          echo "Too few IPv6 addresses covered ($ips_covered)"
+          exit 1
+        fi
+        if [[ "$ips_covered" -gt ${{matrix.list.validate_high}} ]]; then
+          echo "Too many IPv6 addresses covered ($ips_covered)"
+          exit 1
+        fi
+    - name: Push Output of ipv6.txt to category folder
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        source_file: 'ipv6.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/output/${{matrix.list.name}}/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "main"
+    - name: Push Output of ipv6.txt to root (datacenter only)
+      uses: X4BNet/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+      if: ${{ matrix.list.name == 'datacenter' }}
+      with:
+        source_file: 'ipv6.txt'
+        destination_repo: '${{ github.repository }}'
+        destination_folder: '/'
+        user_email: 'automated@x4b.net'
+        user_name: 'listbuilder'
+        destination_branch: "main"
