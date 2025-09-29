@@ -890,3 +890,14 @@ AS210731 # Forening for DotSrc, DE
 AS211619 # MAXKO, HR
 AS152390 # https://github.com/X4BNet/lists_vpn/issues/213
 AS204957 # https://github.com/X4BNet/lists_vpn/issues/230
+AS60435 # https://github.com/X4BNet/lists_vpn/issues/235
+AS43128 # https://github.com/X4BNet/lists_vpn/issues/235
+AS41828 # https://github.com/X4BNet/lists_vpn/issues/235
+AS48894 # https://github.com/X4BNet/lists_vpn/issues/235
+AS28682 # https://github.com/X4BNet/lists_vpn/issues/235
+AS198524 # https://github.com/X4BNet/lists_vpn/issues/235
+AS51790 # https://github.com/X4BNet/lists_vpn/issues/235
+AS60973 # https://github.com/X4BNet/lists_vpn/issues/235
+AS6764 # https://github.com/X4BNet/lists_vpn/issues/235
+AS56635 # https://github.com/X4BNet/lists_vpn/issues/235
+AS5435 # https://github.com/X4BNet/lists_vpn/issues/235
