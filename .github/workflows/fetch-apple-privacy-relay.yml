@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Download and process
       run: |
-        curl -s https://mask-api.icloud.com/egress-ip-ranges.csv | tail -n +2 | cut -d ',' -f1 | grep -v ':' | sort | uniq > /tmp/apple.txt
+        curl -s https://mask-api.icloud.com/egress-ip-ranges.csv | cut -d ',' -f1 | grep -v ':' | sort | uniq > /tmp/apple.txt
     - name: Merge Lists
       run: |
         perl ./helpers/cleanup.pl /tmp/apple.txt > apple.txt
