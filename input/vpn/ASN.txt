@@ -12,3 +12,4 @@ AS401401 # Unredacted
 AS401720 # Unredacted
 AS200373 # 3xktech
 AS198571 # 3xktech
+AS397540 # Windscribe VPN
