@@ -1,0 +1,2 @@
+# IPv6 networks for VPNs only
+# This file will be automatically generated
