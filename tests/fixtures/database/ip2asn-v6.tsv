@@ -1,0 +1,6 @@
+2001:db8::	2001:db8::ffff:ffff:ffff:ffff	64500	ZZ	VPN-A
+2001:db8:0:1::	2001:db8:0:1:ffff:ffff:ffff:ffff	64500	ZZ	VPN-A
+2001:db8:0:2::	2001:db8:0:2:7fff:ffff:ffff:ffff	64500	ZZ	VPN-A
+2001:db8:0:3::	2001:db8:0:3:ffff:ffff:ffff:ffff	64501	ZZ	VPN-B
+2001:db8:0:4::	2001:db8:0:4:ffff:ffff:ffff:ffff	64502	ZZ	DATACENTER-A
+2001:db8:0:5::	2001:db8:0:5:ffff:ffff:ffff:ffff	0	None	Not routed

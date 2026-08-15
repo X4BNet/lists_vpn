@@ -8,9 +8,17 @@ This list doesn't list _all_ VPNs, but should list the vast majority of common o
 
 ## Lists
 
+### IPv4
+
 - **output/vpn/ipv4.txt:** this list is strictly just known VPN networks. A small overlap with Datacenter networks is possible (e.g if it isnt possible to seperate) however most datacenters will not be in this list
 - **output/datacenter/ipv4.txt:** this list is for VPNs and Datacenters. Anything that is "not an eyeball network" directly.
-- **ipv4.txt:** This is a legacy path for the datacenters list (to be removed in 2026, use the above)
+- **ipv4.txt:** This is a legacy path for the datacenters list.
+
+### IPv6
+
+- **output/vpn/ipv6.txt:** IPv6 networks for known VPN providers.
+- **output/datacenter/ipv6.txt:** IPv6 networks for VPNs and datacenters combined.
+- **ipv6.txt:** Legacy path for the datacenter IPv6 list.
 
 ## Conversions
 
@@ -22,7 +30,7 @@ Please open an issue if you know a VPN provider not listed here _and_ have docum
 
 If you wish to improve the automation, a PR is also welcome.
 
-This generation of IP addresses is automated by GitHub Actions CI and rebuilt from the source data regularly. Because the source data is primarily ASNs the data should be accurate for a long period of time.
+This generation of IP addresses is automated by GitHub Actions CI and rebuilt from the source data regularly. Because the source data is primarily ASNs the data should be accurate for a long period of time. To build locally, use `./build-local.sh --output-dir DIR`.
 
 # Credits
 

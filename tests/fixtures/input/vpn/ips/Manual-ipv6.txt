@@ -1,0 +1,3 @@
+# IPv6 manual networks
+2001:db8:0:10::1/64
+not-an-ipv6-network
