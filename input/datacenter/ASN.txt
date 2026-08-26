@@ -904,3 +904,4 @@ AS59787 # https://github.com/X4BNet/lists_vpn/issues/238
 AS213887 # https://github.com/X4BNet/lists_vpn/issues/247
 AS197450 # https://github.com/X4BNet/lists_vpn/issues/256
 AS137373 # https://github.com/X4BNet/lists_vpn/issues/252
+AS396356 # https://github.com/X4BNet/lists_vpn/issues/272
