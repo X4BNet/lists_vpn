@@ -18,6 +18,7 @@ jobs:
     - name: Download and process
       run: |
         curl -s https://api.mullvad.net/www/relays/all | jq -r '.[] | .ipv4_addr_in' | sort -n | uniq > /tmp/mullvadvpn.txt
+        curl -s https://api.mullvad.net/www/relays/all | jq -r '.[] | .ipv6_addr_in' | sort -n | uniq >> /tmp/mullvadvpn.txt
     - name: Merge Lists
       run: |
         perl ./helpers/cleanup.pl /tmp/mullvadvpn.txt > mullvadvpn.txt
