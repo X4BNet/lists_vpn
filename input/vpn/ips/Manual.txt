@@ -1,2 +1,3 @@
 # Manually added netblocks
 # Comment description manditory
+194.5.52.0/23 # VPN Consumer Network Services (https://github.com/X4BNet/lists_vpn/issues/171)
