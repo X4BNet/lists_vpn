@@ -1,0 +1,5 @@
+# VPN ASN selections
+AS64500 # duplicate selection should not duplicate output
+AS64500
+AS64501
+ASinvalid
