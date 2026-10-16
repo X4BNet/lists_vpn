@@ -1,0 +1,2 @@
+# Manually added IPv6 netblocks
+# Comment description mandatory
