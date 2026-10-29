@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build VPN and datacenter network lists from IPtoASN data.
+# Build VPN and datacenter network lists from ASN data.
 
 set -Eeuo pipefail
 
@@ -14,6 +14,7 @@ family="all"
 list="all"
 output_dir=""
 database_dir=""
+database_source="iptoasn"
 input_dir="$INPUT_DIR_DEFAULT"
 work_dir=""
 
@@ -21,19 +22,25 @@ usage() {
     cat <<'EOF'
 Usage: ./build-local.sh --output-dir DIR [options]
 
-Builds the VPN and datacenter IPv4 and IPv6 CIDR lists from IPtoASN data.
+Builds the VPN and datacenter IPv4 and IPv6 CIDR lists from ASN data.
 
 Options:
   --family ipv4|ipv6|all  Address family to build (default: all)
   --list vpn|datacenter|all
                             Category to build (default: all)
   --output-dir DIR          Empty destination directory for generated files
-  --database-dir DIR        Use ip2asn-v4.tsv and ip2asn-v6.tsv from DIR
-                            instead of downloading the selected databases
+  --database-source iptoasn|iplocate
+                            ASN database provider (default: iptoasn)
+  --database-dir DIR        Use local databases instead of downloading:
+                            iptoasn: ip2asn-v4.tsv and ip2asn-v6.tsv
+                            iplocate: ip-to-asn.csv or ip-to-asn.csv.zip
   --input-dir DIR           Input data root (default: ./input; useful for tests)
   -h, --help                Show this help text
 
 When datacenter is built, its ASN selection includes the VPN ASN selection.
+ASN files accept AS12345 includes and -AS12345 exclusions. Selected parent ranges
+include unlisted children. Exclusions apply to their own category, override manual
+networks as well as ASN includes, and are applied after prefix filtering.
 The destination contains category files and, when datacenter IPv4 is selected,
 a root-level ipv4.txt compatibility alias.
 EOF
@@ -72,6 +79,11 @@ while (($#)); do
             database_dir="$2"
             shift 2
             ;;
+        --database-source)
+            (($# >= 2)) || die "--database-source requires a value"
+            database_source="$2"
+            shift 2
+            ;;
         --input-dir)
             (($# >= 2)) || die "--input-dir requires a value"
             input_dir="$2"
@@ -97,6 +109,11 @@ case "$list" in
     *) die "--list must be vpn, datacenter, or all" ;;
 esac
 
+case "$database_source" in
+    iptoasn|iplocate) ;;
+    *) die "--database-source must be iptoasn or iplocate" ;;
+esac
+
 [[ -n "$output_dir" ]] || die "--output-dir is required"
 [[ -d "$input_dir" ]] || die "input directory does not exist: $input_dir"
 [[ -f "$HELPER" ]] || die "missing helper: $HELPER"
@@ -113,13 +130,35 @@ if [[ "$family" == "ipv4" || "$family" == "all" ]]; then
 fi
 if [[ -z "$database_dir" ]]; then
     command -v curl >/dev/null || die "curl is required when --database-dir is not supplied"
-    command -v gzip >/dev/null || die "gzip is required when --database-dir is not supplied"
+    if [[ "$database_source" == "iptoasn" ]]; then
+        command -v gzip >/dev/null || die "gzip is required for IPtoASN downloads"
+    fi
 else
     [[ -d "$database_dir" ]] || die "database directory does not exist: $database_dir"
 fi
 
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/lists-vpn-build.XXXXXX")"
 trap cleanup_work_dir EXIT
+
+prepare_iplocate_database() {
+    if [[ -n "$database_dir" ]]; then
+        for database_file in "$database_dir/ip-to-asn.csv" "$database_dir/ip-to-asn.csv.zip"; do
+            if [[ -s "$database_file" ]]; then
+                printf '%s\n' "$database_file"
+                return
+            fi
+        done
+        die "missing or empty IPLocate database in: $database_dir"
+    fi
+
+    printf 'Downloading IPLocate combined IPv4/IPv6 database...\n' >&2
+    local archive="$work_dir/ip-to-asn.csv.zip"
+    # The repository uses Git LFS; raw.githubusercontent.com returns a pointer.
+    curl --fail --location --retry 3 --retry-all-errors --output "$archive" \
+        "https://media.githubusercontent.com/media/iplocate/ip-address-databases/main/ip-to-asn/ip-to-asn.csv.zip"
+    [[ -s "$archive" ]] || die "downloaded IPLocate database is empty"
+    printf '%s\n' "$archive"
+}
 
 download_database() {
     local family_name="$1"
@@ -209,37 +248,58 @@ case "$list" in
     all) categories=(vpn datacenter) ;;
 esac
 
+if [[ "$database_source" == "iplocate" ]]; then
+    iplocate_database="$(prepare_iplocate_database)"
+    printf 'Selecting IPLocate ASN ranges for requested families in one database pass...\n' >&2
+    python3 "$HELPER" expand-iplocate --family "$family" --list "$list" \
+        --database "$iplocate_database" --vpn-asns "$input_dir/vpn/ASN.txt" \
+        --datacenter-asns "$input_dir/datacenter/ASN.txt" --output-dir "$work_dir"
+fi
+
 for family_name in "${families[@]}"; do
     if [[ "$family_name" == "ipv4" ]]; then
         family_number=4
-        database_file="$(download_database v4)"
     else
         family_number=6
-        database_file="$(download_database v6)"
     fi
-
-    helper_args=(
-        expand-asns
-        --family "$family_number"
-        --database "$database_file"
-        --vpn-asns "$input_dir/vpn/ASN.txt"
-        --datacenter-asns "$input_dir/datacenter/ASN.txt"
-    )
-    if [[ "$list" == "vpn" || "$list" == "all" ]]; then
-        helper_args+=(--vpn-output "$work_dir/vpn-${family_name}-asn.txt")
+    if [[ "$database_source" == "iptoasn" ]]; then
+        if [[ "$family_name" == "ipv4" ]]; then
+            database_file="$(download_database v4)"
+        else
+            database_file="$(download_database v6)"
+        fi
+        helper_args=(
+            expand-asns
+            --family "$family_number"
+            --database "$database_file"
+            --database-source "$database_source"
+            --vpn-asns "$input_dir/vpn/ASN.txt"
+            --datacenter-asns "$input_dir/datacenter/ASN.txt"
+        )
+        if [[ "$list" == "vpn" || "$list" == "all" ]]; then
+            helper_args+=(--vpn-output "$work_dir/vpn-${family_name}-asn.txt")
+            helper_args+=(--vpn-exclusions-output "$work_dir/vpn-${family_name}-exclusions.txt")
+        fi
+        if [[ "$list" == "datacenter" || "$list" == "all" ]]; then
+            helper_args+=(--datacenter-output "$work_dir/datacenter-${family_name}-asn.txt")
+            helper_args+=(--datacenter-exclusions-output "$work_dir/datacenter-${family_name}-exclusions.txt")
+        fi
+        printf 'Selecting %s ASN ranges in one database pass...\n' "$family_name" >&2
+        python3 "$HELPER" "${helper_args[@]}"
     fi
-    if [[ "$list" == "datacenter" || "$list" == "all" ]]; then
-        helper_args+=(--datacenter-output "$work_dir/datacenter-${family_name}-asn.txt")
-    fi
-
-    printf 'Selecting %s ASN ranges in one database pass...\n' "$family_name" >&2
-    python3 "$HELPER" "${helper_args[@]}"
 
     for category in "${categories[@]}"; do
         if [[ "$family_name" == "ipv4" ]]; then
             build_ipv4_output "$category"
         else
             build_ipv6_output "$category"
+        fi
+        exclusions="$work_dir/${category}-${family_name}-exclusions.txt"
+        if [[ -s "$exclusions" ]]; then
+            destination="$work_dir/output/$category/${family_name}.txt"
+            python3 "$HELPER" exclude --family "$family_number" --input "$destination" \
+                --exclusions "$exclusions" --output "$destination.excluded"
+            mv "$destination.excluded" "$destination"
         fi
     done
 done
@@ -253,6 +313,18 @@ done
 
 if [[ ( "$list" == "datacenter" || "$list" == "all" ) && ( "$family" == "ipv4" || "$family" == "all" ) ]]; then
     cp "$work_dir/output/datacenter/ipv4.txt" "$output_dir/ipv4.txt"
+fi
+
+if [[ "$database_source" == "iplocate" ]]; then
+    cat > "$output_dir/ASN-DATABASE.txt" <<'EOF'
+IP address data powered by IPLocate.io: https://www.iplocate.io
+Source: https://github.com/iplocate/ip-address-databases
+ASN database license: Creative Commons Attribution-ShareAlike 4.0 International
+https://creativecommons.org/licenses/by-sa/4.0/
+Changes: selected configured ASNs, converted/filtered/merged ranges, added manual networks.
+These experimental outputs use IPLocate data; the repository's MIT notice alone
+does not describe the upstream database license. Review distribution terms before publishing.
+EOF
 fi
 
 printf 'Generated output in %s\n' "$output_dir" >&2

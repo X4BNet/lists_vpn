@@ -32,18 +32,69 @@ If you wish to improve the automation, a PR is also welcome.
 
 This generation of IP addresses is automated by GitHub Actions CI and rebuilt from the source data regularly. Because the source data is primarily ASNs the data should be accurate for a long period of time. To build locally, use `./build-local.sh --output-dir DIR`.
 
+## ASN database
+
+We use the [IPLocate IP to ASN database](https://github.com/iplocate/ip-address-databases/tree/main/ip-to-asn)
+to map the configured ASNs to IPv4 and IPv6 ranges. IP address data powered by
+[IPLocate.io](https://www.iplocate.io).
+
+Build the lists using IPLocate:
+
+```sh
+./build-local.sh --database-source iplocate --output-dir /tmp/lists-vpn-iplocate-output
+```
+
+The builder downloads the combined IPv4/IPv6 ZIP once and streams its CSV without
+extracting it. One CSV pass selects both families and any explicit exclusions;
+normalization merges integer intervals to limit memory use.
+Selected parent prefixes include their child ranges, even when a
+more specific child belongs to an ASN that is not listed.
+For repeatable offline builds, pass `--database-dir DIR` containing
+`ip-to-asn.csv.zip` or `ip-to-asn.csv` (CSV takes precedence). IPtoASN offline builds
+use `ip2asn-v4.tsv` and `ip2asn-v6.tsv`. Both sources use the same ASN selections,
+manual inputs, and prefix filters. The destination must be empty.
+
+ASN files accept explicit exclusions:
+
+```text
+AS15169   # Include this ASN's ranges, including children
+-AS12345  # Exclude this ASN's ranges, even inside an included parent
+```
+
+Exclusions win over all includes and manual networks. They are applied after
+prefix filtering, so an exclusion can leave precise holes smaller than `/24` or
+`/64`. An exclusion applies only to the category whose `ASN.txt` contains it.
+Datacenter inherits VPN includes; it does not inherit VPN exclusions. Both
+database providers support exclusions, using the ranges present in that provider's
+database. IPtoASN's flat ranges cannot restore a parent prefix omitted upstream.
+
+Compare two complete builds by address coverage, including added/removed CIDRs:
+
+```sh
+python3 helpers/compare_outputs.py --baseline /tmp/lists-vpn-iptoasn-output \
+  --candidate /tmp/lists-vpn-iplocate-output --output-dir /tmp/lists-vpn-comparison
+```
+
+The upstream IPLocate database is licensed under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). IPLocate builds
+include `ASN-DATABASE.txt` with source attribution and upstream license details.
+This repository's scripts, curated inputs, and generated lists are licensed under
+MIT, as set out below. Upstream sources retain their own licenses.
+
 # Credits
 
 This list was inspired by ejrv and their manually curated list.
 
 # License
 
-Software in the below license corresponds to the scripts, automation, and the list itself (source files and generated output).
+The scripts, automation, curated source files, and generated IP lists produced by
+this project are licensed under the MIT License. Upstream database licenses are
+identified in the ASN database section above.
 
 ```
 MIT License
 
-Copyright (c) 2024 X4B (Mathew Heard)
+Copyright (c) 2026 X4B (Mathew Heard)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
