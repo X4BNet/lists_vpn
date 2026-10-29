@@ -24,3 +24,4 @@ AS218659 # Free VPN One Co., Limited
 AS208765 # Bullet Proof VPN Ltd
 AS197141 # Mullvad VPN AB
 AS154050 # GAMING VPN PTY LTD
+AS219329 # Flashproxy.io
