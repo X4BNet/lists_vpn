@@ -34,8 +34,8 @@ Options:
   -h, --help                Show this help text
 
 When datacenter is built, its ASN selection includes the VPN ASN selection.
-The destination contains category files and, when datacenter is selected,
-root-level ipv4.txt and ipv6.txt compatibility aliases.
+The destination contains category files and, when datacenter IPv4 is selected,
+a root-level ipv4.txt compatibility alias.
 EOF
 }
 
@@ -251,10 +251,8 @@ for category in "${categories[@]}"; do
     done
 done
 
-if [[ "$list" == "datacenter" || "$list" == "all" ]]; then
-    for family_name in "${families[@]}"; do
-        cp "$work_dir/output/datacenter/${family_name}.txt" "$output_dir/${family_name}.txt"
-    done
+if [[ ( "$list" == "datacenter" || "$list" == "all" ) && ( "$family" == "ipv4" || "$family" == "all" ) ]]; then
+    cp "$work_dir/output/datacenter/ipv4.txt" "$output_dir/ipv4.txt"
 fi
 
 printf 'Generated output in %s\n' "$output_dir" >&2

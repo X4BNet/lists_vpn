@@ -1,10 +1,11 @@
 # VPN & datacenter IPs
+
 This is a list of common VPN providers. There are lots of lists of open proxies and tor nodes on the web, but surprisingly few usable ones dedicated to VPN providers and datacenters. This list combines:
 
-  - Known VPN netblocks
-  - ASNs owned by datacenters and VPN providers
+- Known VPN netblocks
+- ASNs owned by datacenters and VPN providers
 
-This list doesn't list _all_ VPNs, but should list the vast majority of common ones. 
+This list doesn't list _all_ VPNs, but should list the vast majority of common ones.
 
 ## Lists
 
@@ -12,13 +13,12 @@ This list doesn't list _all_ VPNs, but should list the vast majority of common o
 
 - **output/vpn/ipv4.txt:** this list is strictly just known VPN networks. A small overlap with Datacenter networks is possible (e.g if it isnt possible to seperate) however most datacenters will not be in this list
 - **output/datacenter/ipv4.txt:** this list is for VPNs and Datacenters. Anything that is "not an eyeball network" directly.
-- **ipv4.txt:** This is a legacy path for the datacenters list.
+- **ipv4.txt:** This is a legacy path for the datacenters list (this is scheduled for removal in 2027).
 
 ### IPv6
 
 - **output/vpn/ipv6.txt:** IPv6 networks for known VPN providers.
 - **output/datacenter/ipv6.txt:** IPv6 networks for VPNs and datacenters combined.
-- **ipv6.txt:** Legacy path for the datacenter IPv6 list.
 
 ## Conversions
 
@@ -34,7 +34,7 @@ This generation of IP addresses is automated by GitHub Actions CI and rebuilt fr
 
 # Credits
 
-This list was inspired by ejrv and their manually curated list. 
+This list was inspired by ejrv and their manually curated list.
 
 # License
 

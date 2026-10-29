@@ -87,7 +87,7 @@ class BuildListTests(unittest.TestCase):
                 )
 
             self.assert_fixture_output(output_dir / "ipv4.txt", FIXTURES / "expected" / "datacenter" / "ipv4.txt")
-            self.assert_fixture_output(output_dir / "ipv6.txt", FIXTURES / "expected" / "datacenter" / "ipv6.txt")
+            self.assertFalse((output_dir / "ipv6.txt").exists())
 
     def test_single_category_and_family_only_emit_requested_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
