@@ -38,10 +38,10 @@ We use the [IPLocate IP to ASN database](https://github.com/iplocate/ip-address-
 to map the configured ASNs to IPv4 and IPv6 ranges. IP address data powered by
 [IPLocate.io](https://www.iplocate.io).
 
-Build the lists using IPLocate:
+IPLocate is the default database source. To build the lists:
 
 ```sh
-./build-local.sh --database-source iplocate --output-dir /tmp/lists-vpn-iplocate-output
+./build-local.sh --output-dir /tmp/lists-vpn-iplocate-output
 ```
 
 The builder downloads the combined IPv4/IPv6 ZIP once and streams its CSV without
@@ -71,7 +71,7 @@ database. IPtoASN's flat ranges cannot restore a parent prefix omitted upstream.
 IPLocate builds also select entries using literal, case-insensitive substring
 matches in the CSV's `name`, `org`, or `domain` fields. Keywords are configured in
 `input/vpn/Keywords.txt` (initially `VPN`) and
-`input/datacenter/Keywords.txt` (initially `Host`), one keyword per line:
+`input/datacenter/Keywords.txt` (`Host` and `Huawei`), one keyword per line:
 
 ```text
 VPN          # Include matching entries, even if their ASN is not listed

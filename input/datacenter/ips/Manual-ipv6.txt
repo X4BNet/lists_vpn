@@ -1,2 +1,6 @@
 # Manually added IPv6 netblocks
 # Comment description mandatory
+
+# Temporary until IPLocate includes this registered, RPKI-valid allocation.
+# Registry: https://rdap.apnic.net/ip/2410:7000::/20
+2410:7000::/20 # Huawei Cloud South Africa (AS136907)

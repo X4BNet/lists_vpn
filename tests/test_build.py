@@ -203,7 +203,7 @@ class BuildListTests(unittest.TestCase):
                 self.assertIn(error, caught.exception.stderr)
                 self.assertEqual(list(output_dir.iterdir()), [])
 
-    def test_iplocate_downloads_lfs_archive_once_for_both_families(self) -> None:
+    def test_default_source_downloads_iplocate_once_for_both_families(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             temporary_path = Path(temporary_directory)
             archive_path = temporary_path / "fixture.zip"
@@ -220,7 +220,7 @@ class BuildListTests(unittest.TestCase):
             log = temporary_path / "curl.log"
             output_dir = temporary_path / "output"
             subprocess.run(
-                ["bash", str(BUILD), "--database-source", "iplocate", "--output-dir", str(output_dir),
+                ["bash", str(BUILD), "--output-dir", str(output_dir),
                  "--input-dir", str(FIXTURES / "input")],
                 env={**os.environ, "PATH": f"{temporary_path}:{os.environ['PATH']}",
                      "CURL_LOG": str(log), "CURL_FIXTURE": str(archive_path)},

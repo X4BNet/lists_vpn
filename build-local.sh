@@ -14,7 +14,7 @@ family="all"
 list="all"
 output_dir=""
 database_dir=""
-database_source="iptoasn"
+database_source="iplocate"
 input_dir="$INPUT_DIR_DEFAULT"
 work_dir=""
 
@@ -30,7 +30,7 @@ Options:
                             Category to build (default: all)
   --output-dir DIR          Empty destination directory for generated files
   --database-source iptoasn|iplocate
-                            ASN database provider (default: iptoasn)
+                            ASN database provider (default: iplocate)
   --database-dir DIR        Use local databases instead of downloading:
                             iptoasn: ip2asn-v4.tsv and ip2asn-v6.tsv
                             iplocate: ip-to-asn.csv or ip-to-asn.csv.zip
