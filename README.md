@@ -68,6 +68,24 @@ Datacenter inherits VPN includes; it does not inherit VPN exclusions. Both
 database providers support exclusions, using the ranges present in that provider's
 database. IPtoASN's flat ranges cannot restore a parent prefix omitted upstream.
 
+IPLocate builds also select entries using literal, case-insensitive substring
+matches in the CSV's `name`, `org`, or `domain` fields. Keywords are configured in
+`input/vpn/Keywords.txt` (initially `VPN`) and
+`input/datacenter/Keywords.txt` (initially `Host`), one keyword per line:
+
+```text
+VPN          # Include matching entries, even if their ASN is not listed
+-Example VPN # Exclude entries containing this phrase
+```
+
+Blank lines and `#` comments are ignored. Matching any positive keyword includes
+the entry's network; matching a negative keyword excludes it, overriding ASN,
+keyword, and manual includes. Keyword exclusions apply only to their category;
+datacenter inherits VPN keyword includes. Matching is per CSV entry, so it does
+not automatically include or exclude other networks belonging to the same ASN.
+Keyword files are optional for custom input directories. IPtoASN builds use only
+ASN and manual rules. Scheduled builds explicitly select IPLocate.
+
 Compare two complete builds by address coverage, including added/removed CIDRs:
 
 ```sh

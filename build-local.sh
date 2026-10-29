@@ -41,6 +41,8 @@ When datacenter is built, its ASN selection includes the VPN ASN selection.
 ASN files accept AS12345 includes and -AS12345 exclusions. Selected parent ranges
 include unlisted children. Exclusions apply to their own category, override manual
 networks as well as ASN includes, and are applied after prefix filtering.
+IPLocate builds also read optional category Keywords.txt files. Keywords match
+name, org, or domain case-insensitively; -keyword excludes matching ranges.
 The destination contains category files and, when datacenter IPv4 is selected,
 a root-level ipv4.txt compatibility alias.
 EOF
@@ -249,11 +251,17 @@ case "$list" in
 esac
 
 if [[ "$database_source" == "iplocate" ]]; then
+    keyword_args=()
+    for category in vpn datacenter; do
+        if [[ -f "$input_dir/$category/Keywords.txt" ]]; then
+            keyword_args+=("--${category}-keywords" "$input_dir/$category/Keywords.txt")
+        fi
+    done
     iplocate_database="$(prepare_iplocate_database)"
-    printf 'Selecting IPLocate ASN ranges for requested families in one database pass...\n' >&2
+    printf 'Selecting IPLocate ASN and keyword ranges for requested families in one database pass...\n' >&2
     python3 "$HELPER" expand-iplocate --family "$family" --list "$list" \
         --database "$iplocate_database" --vpn-asns "$input_dir/vpn/ASN.txt" \
-        --datacenter-asns "$input_dir/datacenter/ASN.txt" --output-dir "$work_dir"
+        --datacenter-asns "$input_dir/datacenter/ASN.txt" --output-dir "$work_dir" "${keyword_args[@]}"
 fi
 
 for family_name in "${families[@]}"; do
@@ -321,7 +329,7 @@ IP address data powered by IPLocate.io: https://www.iplocate.io
 Source: https://github.com/iplocate/ip-address-databases
 ASN database license: Creative Commons Attribution-ShareAlike 4.0 International
 https://creativecommons.org/licenses/by-sa/4.0/
-Changes: selected configured ASNs, converted/filtered/merged ranges, added manual networks.
+Changes: selected configured ASNs and keywords, converted/filtered/merged ranges, added manual networks.
 These experimental outputs use IPLocate data; the repository's MIT notice alone
 does not describe the upstream database license. Review distribution terms before publishing.
 EOF
