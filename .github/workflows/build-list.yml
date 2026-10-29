@@ -44,7 +44,7 @@ jobs:
         destination_folder: '/output/vpn/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "main"
+        destination_branch: '${{ github.ref_name }}'
     - name: Publish datacenter IPv4 output
       uses: X4BNet/copy_file_to_another_repo_action@main
       env:
@@ -55,7 +55,7 @@ jobs:
         destination_folder: '/output/datacenter/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "main"
+        destination_branch: '${{ github.ref_name }}'
     - name: Publish VPN IPv6 output
       uses: X4BNet/copy_file_to_another_repo_action@main
       env:
@@ -66,7 +66,7 @@ jobs:
         destination_folder: '/output/vpn/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "main"
+        destination_branch: '${{ github.ref_name }}'
     - name: Publish datacenter IPv6 output
       uses: X4BNet/copy_file_to_another_repo_action@main
       env:
@@ -77,7 +77,7 @@ jobs:
         destination_folder: '/output/datacenter/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "main"
+        destination_branch: '${{ github.ref_name }}'
     - name: Publish IPv4 legacy alias
       uses: X4BNet/copy_file_to_another_repo_action@main
       env:
@@ -88,6 +88,6 @@ jobs:
         destination_folder: '/'
         user_email: 'automated@x4b.net'
         user_name: 'listbuilder'
-        destination_branch: "main"
+        destination_branch: '${{ github.ref_name }}'
 
 

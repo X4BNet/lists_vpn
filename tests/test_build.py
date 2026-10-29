@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import os
+import ipaddress
 import subprocess
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -162,6 +164,146 @@ class BuildListTests(unittest.TestCase):
                         capture_output=True,
                         text=True,
                     )
+
+    def test_iplocate_csv_and_dated_zip_match_both_family_fixtures(self) -> None:
+        for compressed in (False, True):
+            with self.subTest(compressed=compressed), tempfile.TemporaryDirectory() as temporary_directory:
+                temporary_path = Path(temporary_directory)
+                database_dir = FIXTURES / "database"
+                if compressed:
+                    database_dir = temporary_path / "database"
+                    database_dir.mkdir()
+                    with zipfile.ZipFile(database_dir / "ip-to-asn.csv.zip", "w") as archive:
+                        archive.write(FIXTURES / "database" / "ip-to-asn.csv", "ip-to-asn-20261028.csv")
+                output_dir = temporary_path / "output"
+                self.run_build(output_dir, "--database-source", "iplocate", "--database-dir", str(database_dir))
+                for category in ("vpn", "datacenter"):
+                    for filename in ("ipv4.txt", "ipv6.txt"):
+                        self.assert_fixture_output(
+                            output_dir / category / filename, FIXTURES / "expected" / category / filename,
+                        )
+                self.assert_fixture_output(output_dir / "ipv4.txt", output_dir / "datacenter" / "ipv4.txt")
+                self.assertIn("IPLocate.io", (output_dir / "ASN-DATABASE.txt").read_text())
+
+    def test_iplocate_rejects_invalid_databases_without_publishing_lists(self) -> None:
+        cases = (
+            ("network,wrong_column\n10.0.0.0/24,64500\n", "requires network and asn"),
+            ("network,asn\n10.0.0.0/24,bad\n", "invalid IPLocate ASN"),
+            ("network,asn\nbad,64500\n", "invalid IPLocate network"),
+        )
+        for content, error in cases:
+            with self.subTest(error=error), tempfile.TemporaryDirectory() as temporary_directory:
+                temporary_path = Path(temporary_directory)
+                database_dir = temporary_path / "database"
+                database_dir.mkdir()
+                (database_dir / "ip-to-asn.csv").write_text(content)
+                output_dir = temporary_path / "output"
+                with self.assertRaises(subprocess.CalledProcessError) as caught:
+                    self.run_build(output_dir, "--database-source", "iplocate", "--database-dir", str(database_dir))
+                self.assertIn(error, caught.exception.stderr)
+                self.assertEqual(list(output_dir.iterdir()), [])
+
+    def test_iplocate_downloads_lfs_archive_once_for_both_families(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary_path = Path(temporary_directory)
+            archive_path = temporary_path / "fixture.zip"
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                archive.write(FIXTURES / "database" / "ip-to-asn.csv", "ip-to-asn-20261028.csv")
+            curl = temporary_path / "curl"
+            curl.write_text(
+                '#!/usr/bin/env python3\n'
+                'import os, pathlib, shutil, sys\n'
+                'with open(os.environ["CURL_LOG"], "a") as log: log.write(sys.argv[-1] + "\\n")\n'
+                'shutil.copyfile(os.environ["CURL_FIXTURE"], sys.argv[sys.argv.index("--output") + 1])\n'
+            )
+            curl.chmod(0o755)
+            log = temporary_path / "curl.log"
+            output_dir = temporary_path / "output"
+            subprocess.run(
+                ["bash", str(BUILD), "--database-source", "iplocate", "--output-dir", str(output_dir),
+                 "--input-dir", str(FIXTURES / "input")],
+                env={**os.environ, "PATH": f"{temporary_path}:{os.environ['PATH']}",
+                     "CURL_LOG": str(log), "CURL_FIXTURE": str(archive_path)},
+                check=True, capture_output=True, text=True,
+            )
+            self.assertEqual(log.read_text().splitlines(), [
+                "https://media.githubusercontent.com/media/iplocate/ip-address-databases/main/ip-to-asn/ip-to-asn.csv.zip"
+            ])
+            self.assert_fixture_output(output_dir / "vpn" / "ipv6.txt", FIXTURES / "expected" / "vpn" / "ipv6.txt")
+
+    def test_iplocate_selected_parents_include_unlisted_children(self) -> None:
+        # Deliberately unordered, with both selected and unselected descendants.
+        rows = (
+            "10.0.1.0/25,64502\n10.0.1.0/24,64599\n10.0.0.0/22,64500\n"
+            "192.0.2.0/25,64500\n192.0.2.0/24,64599\n"
+            "2001:db8:0:1::/65,64502\n2001:db8:0:1::/64,64599\n2001:db8::/62,64500\n"
+            "2001:db8:1::/65,64500\n2001:db8:1::/64,64599\n"
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary_path = Path(temporary_directory)
+            database = temporary_path / "ip-to-asn.csv"
+            database.write_text("network,asn\n" + rows)
+            for family, vpn_expected, extra_datacenter in (
+                (4, ["10.0.0.0/22", "192.0.2.0/25"], "10.0.1.0/25"),
+                (6, ["2001:db8::/62", "2001:db8:1::/65"], "2001:db8:0:1::/65"),
+            ):
+                outputs = {category: temporary_path / f"{category}-{family}.txt" for category in ("vpn", "datacenter")}
+                subprocess.run(
+                    ["python3", str(HELPER), "expand-asns", "--database-source", "iplocate",
+                     "--family", str(family), "--database", str(database),
+                     "--vpn-asns", str(FIXTURES / "input/vpn/ASN.txt"),
+                     "--datacenter-asns", str(FIXTURES / "input/datacenter/ASN.txt"),
+                     "--vpn-output", str(outputs["vpn"]), "--datacenter-output", str(outputs["datacenter"])],
+                    check=True, capture_output=True, text=True,
+                )
+                for category, path in outputs.items():
+                    expected = vpn_expected + ([extra_datacenter] if category == "datacenter" else [])
+                    self.assertEqual(
+                        list(ipaddress.collapse_addresses(map(ipaddress.ip_network, path.read_text().splitlines()))),
+                        list(ipaddress.collapse_addresses(map(ipaddress.ip_network, expected))),
+                    )
+
+    def test_signed_asn_exclusions_override_parents_children_and_manual_inputs(self) -> None:
+        rows = [
+            ("10.0.0.0/22", 64500), ("10.0.1.0/24", 64599), ("10.0.1.0/25", 64500),
+            ("10.0.2.0/25", 64598), ("10.0.3.0/24", 64577), ("192.0.2.0/24", 64502),
+            ("2001:db8::/62", 64500), ("2001:db8:0:1::/64", 64599),
+            ("2001:db8:0:1::/65", 64500), ("2001:db8:0:2::/65", 64598),
+            ("2001:db8:0:3::/64", 64577), ("2001:db8:1::/64", 64502),
+        ]
+        expected = {
+            ("vpn", 4): ["10.0.0.0/24", "10.0.2.0/23"],
+            ("datacenter", 4): ["10.0.0.0/23", "10.0.2.128/25", "10.0.3.0/24", "192.0.2.0/24"],
+            ("vpn", 6): ["2001:db8::/64", "2001:db8:0:2::/63"],
+            ("datacenter", 6): ["2001:db8::/63", "2001:db8:0:2:8000::/65", "2001:db8:0:3::/64", "2001:db8:1::/64"],
+        }
+        for provider in ("iptoasn", "iplocate"):
+            with self.subTest(provider=provider), tempfile.TemporaryDirectory() as temporary_directory:
+                temporary_path = Path(temporary_directory)
+                input_dir = temporary_path / "input"
+                for category in ("vpn", "datacenter"):
+                    directory = input_dir / category
+                    (directory / "ips").mkdir(parents=True)
+                    rules = "AS64500\nAS64599\n-AS64599 # explicit removal wins\n" if category == "vpn" else "AS64502\n-AS64598\n"
+                    (directory / "ASN.txt").write_text(rules)
+                    (directory / "ips/Manual.txt").write_text("10.0.1.0/24\n10.0.2.0/24\n")
+                    (directory / "ips/Manual-ipv6.txt").write_text("2001:db8:0:1::/64\n2001:db8:0:2::/64\n")
+                database_dir = temporary_path / "database"
+                database_dir.mkdir()
+                (database_dir / "ip-to-asn.csv").write_text("network,asn\n" + "".join(f"{network},{asn}\n" for network, asn in rows))
+                for family in (4, 6):
+                    with (database_dir / f"ip2asn-v{family}.tsv").open("w") as database:
+                        for token, asn in rows:
+                            network = ipaddress.ip_network(token)
+                            if network.version == family:
+                                print(f"{network.network_address}\t{network.broadcast_address}\t{asn}\tZZ\tfixture", file=database)
+                output = temporary_path / "output"
+                self.run_build(output, "--database-source", provider, "--database-dir", str(database_dir), "--input-dir", str(input_dir))
+                for (category, family), networks in expected.items():
+                    actual = (output / category / f"ipv{family}.txt").read_text().splitlines()
+                    self.assertEqual(list(ipaddress.collapse_addresses(map(ipaddress.ip_network, actual))),
+                                     list(ipaddress.collapse_addresses(map(ipaddress.ip_network, networks))))
+                self.assert_fixture_output(output / "ipv4.txt", output / "datacenter/ipv4.txt")
 
 
 if __name__ == "__main__":
