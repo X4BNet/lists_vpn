@@ -14,3 +14,13 @@ AS200373 # 3xktech
 AS198571 # 3xktech
 AS208172 # ProtonVPN (https://github.com/X4BNet/lists_vpn/issues/248)
 AS216025 # Mullvad VPN AB (https://github.com/X4BNet/lists_vpn/issues/177)
+AS207957 # serv.host (https://github.com/X4BNet/lists_vpn/issues/284)
+AS397282 # Castle VPN
+AS27683 # VPN de Mexico, S.A. de C.V.
+AS219467 # SUYOU VPN LIMITED
+AS219022 # FREE VPN GLOBAL LTD
+AS218908 # SSS VPN TECHNICAL CO., LTD.
+AS218659 # Free VPN One Co., Limited
+AS208765 # Bullet Proof VPN Ltd
+AS197141 # Mullvad VPN AB
+AS154050 # GAMING VPN PTY LTD

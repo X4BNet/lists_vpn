@@ -946,3 +946,4 @@ AS63023 # GlobalTeleHost Corp. / GTHost (https://github.com/X4BNet/lists_vpn/iss
 AS50131 # Spartan Host Ltd (https://github.com/X4BNet/lists_vpn/issues/239)
 AS216058 # ProITLab LLC / HayHost (https://github.com/X4BNet/lists_vpn/issues/243)
 AS54113 # Fastly (https://github.com/X4BNet/lists_vpn/issues/281)
+AS206092 # https://github.com/X4BNet/lists_vpn/issues/279 (contains express vpn)
