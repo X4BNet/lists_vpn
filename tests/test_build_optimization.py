@@ -42,6 +42,9 @@ class BuildOptimizationTests(unittest.TestCase):
             vpn_asns, dc_asns = directory / "vpn.txt", directory / "datacenter.txt"
             vpn_asns.write_text("AS64500\n-AS64599\n")
             dc_asns.write_text("AS64502\n-AS64598\n")
+            vpn_keywords, dc_keywords = directory / "vpn-keywords.txt", directory / "datacenter-keywords.txt"
+            vpn_keywords.write_text("VPN\n-Example\n")
+            dc_keywords.write_text("Company\n-example\n")
             database = directory / "ip-to-asn.csv"
             # Interleaved families, reordered columns, a BOM, and CSV metadata
             # containing commas/newlines must not affect routing to the outputs.
@@ -50,10 +53,12 @@ class BuildOptimizationTests(unittest.TestCase):
                 'example,64599,10.0.1.0/24\nexample,64500,10.0.0.0/22\n'
                 '"Example\nCompany",64598,2001:db8:0:1::/65\n'
                 'example,64502,192.0.2.0/24\nexample,64599,2001:db8:1::/64\n'
+                'My VPN,64600,198.18.0.0/24\nMy VPN,64600,2001:db8:2::/64\n'
             )
             combined = directory / "combined"
             args = argparse.Namespace(database=database, vpn_asns=vpn_asns, datacenter_asns=dc_asns,
-                                      output_dir=combined, family="all", list="all")
+                                      output_dir=combined, family="all", list="all",
+                                      vpn_keywords=vpn_keywords, datacenter_keywords=dc_keywords)
             with patch.object(helper, "open_iplocate", wraps=helper.open_iplocate) as opened:
                 helper.expand_iplocate(args)
             self.assertEqual(opened.call_count, 1)
@@ -61,7 +66,8 @@ class BuildOptimizationTests(unittest.TestCase):
                 paths = {name: directory / f"{family}-{name}.txt" for name in (
                     "vpn_output", "datacenter_output", "vpn_exclusions_output", "datacenter_exclusions_output")}
                 helper.expand_asns(argparse.Namespace(database=database, database_source="iplocate", family=family,
-                                                     vpn_asns=vpn_asns, datacenter_asns=dc_asns, **paths))
+                                                     vpn_asns=vpn_asns, datacenter_asns=dc_asns,
+                                                     vpn_keywords=vpn_keywords, datacenter_keywords=dc_keywords, **paths))
                 for category in ("vpn", "datacenter"):
                     for suffix, argument in (("asn", "output"), ("exclusions", "exclusions_output")):
                         self.assertEqual((combined / f"{category}-ipv{family}-{suffix}.txt").read_bytes(),

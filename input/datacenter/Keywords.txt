@@ -1,0 +1,3 @@
+# Case-insensitive substrings in IPLocate name, org, or domain. Use -keyword to exclude.
+Host
+Huawei

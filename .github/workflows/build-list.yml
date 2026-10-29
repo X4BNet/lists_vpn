@@ -25,11 +25,11 @@ jobs:
         python3 -m unittest discover -s tests -p 'test_*.py'
     - name: Build IPv4 and IPv6 lists
       run: |
-        ./build-local.sh --family all --list all --output-dir .generated-output
+        ./build-local.sh --database-source iplocate --family all --list all --output-dir .generated-output
     - name: Validate IPv4 lists
       run: |
         python3 ./helpers/asn_to_cidr.py validate --family 4 --input .generated-output/vpn/ipv4.txt --min-addresses 2000000 --max-addresses 4000000
-        python3 ./helpers/asn_to_cidr.py validate --family 4 --input .generated-output/datacenter/ipv4.txt --min-addresses 250000000 --max-addresses 400000000
+        python3 ./helpers/asn_to_cidr.py validate --family 4 --input .generated-output/datacenter/ipv4.txt --min-addresses 250000000 --max-addresses 425000000
     - name: Validate IPv6 lists
       run: |
         python3 ./helpers/asn_to_cidr.py validate --family 6 --input .generated-output/vpn/ipv6.txt --require-nonempty

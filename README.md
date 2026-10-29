@@ -38,10 +38,10 @@ We use the [IPLocate IP to ASN database](https://github.com/iplocate/ip-address-
 to map the configured ASNs to IPv4 and IPv6 ranges. IP address data powered by
 [IPLocate.io](https://www.iplocate.io).
 
-Build the lists using IPLocate:
+IPLocate is the default database source. To build the lists:
 
 ```sh
-./build-local.sh --database-source iplocate --output-dir /tmp/lists-vpn-iplocate-output
+./build-local.sh --output-dir /tmp/lists-vpn-iplocate-output
 ```
 
 The builder downloads the combined IPv4/IPv6 ZIP once and streams its CSV without
@@ -67,6 +67,24 @@ prefix filtering, so an exclusion can leave precise holes smaller than `/24` or
 Datacenter inherits VPN includes; it does not inherit VPN exclusions. Both
 database providers support exclusions, using the ranges present in that provider's
 database. IPtoASN's flat ranges cannot restore a parent prefix omitted upstream.
+
+IPLocate builds also select entries using literal, case-insensitive substring
+matches in the CSV's `name`, `org`, or `domain` fields. Keywords are configured in
+`input/vpn/Keywords.txt` (initially `VPN`) and
+`input/datacenter/Keywords.txt` (`Host` and `Huawei`), one keyword per line:
+
+```text
+VPN          # Include matching entries, even if their ASN is not listed
+-Example VPN # Exclude entries containing this phrase
+```
+
+Blank lines and `#` comments are ignored. Matching any positive keyword includes
+the entry's network; matching a negative keyword excludes it, overriding ASN,
+keyword, and manual includes. Keyword exclusions apply only to their category;
+datacenter inherits VPN keyword includes. Matching is per CSV entry, so it does
+not automatically include or exclude other networks belonging to the same ASN.
+Keyword files are optional for custom input directories. IPtoASN builds use only
+ASN and manual rules. Scheduled builds explicitly select IPLocate.
 
 Compare two complete builds by address coverage, including added/removed CIDRs:
 

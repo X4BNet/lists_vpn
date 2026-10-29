@@ -53,6 +53,27 @@ def load_asns(path: Path) -> set[int]:
     return included - excluded
 
 
+def load_keyword_rules(path: Path | None) -> tuple[set[str], set[str]]:
+    """Read literal, case-insensitive substrings; '-' marks an exclusion."""
+    included: set[str] = set()
+    excluded: set[str] = set()
+    if path is None:
+        return included, excluded
+    with path.open(encoding="utf-8") as source:
+        for line_number, raw_line in enumerate(source, start=1):
+            keyword = raw_line.split("#", 1)[0].strip()
+            if not keyword:
+                continue
+            target = included
+            if keyword.startswith("-"):
+                target = excluded
+                keyword = keyword[1:].strip()
+            if not keyword:
+                raise ValueError(f"empty keyword exclusion at {path}:{line_number}")
+            target.add(keyword.casefold())
+    return included, excluded
+
+
 def open_output(path: Path | None) -> TextIO | None:
     if path is None:
         return None
@@ -76,13 +97,17 @@ def open_iplocate(path: Path) -> Iterator[TextIO]:
             yield database
 
 
-def iplocate_networks(path: Path, wanted: set[int]) -> Iterator[tuple[int, ipaddress.IPv4Network | ipaddress.IPv6Network]]:
+def iplocate_networks(path: Path, wanted: set[int], keywords: set[str] | None = None
+                     ) -> Iterator[tuple[int, ipaddress.IPv4Network | ipaddress.IPv6Network, set[str]]]:
     with open_iplocate(path) as database:
         rows = csv.reader(database, strict=True)
         header = next(rows, [])
         if not {"network", "asn"}.issubset(header):
             raise ValueError("IPLocate CSV requires network and asn columns")
         network_column, asn_column = header.index("network"), header.index("asn")
+        metadata_columns = [header.index(field) for field in ("name", "org", "domain") if field in header]
+        if keywords and not metadata_columns:
+            raise ValueError("IPLocate keyword rules require name, org, or domain columns")
         for row in rows:
             if not row:
                 continue
@@ -90,19 +115,26 @@ def iplocate_networks(path: Path, wanted: set[int]) -> Iterator[tuple[int, ipadd
                 asn = int(row[asn_column])
             except (IndexError, ValueError) as error:
                 raise ValueError(f"invalid IPLocate ASN at {path}:{rows.line_num}") from error
-            if asn not in wanted:
+            matches: set[str] = set()
+            if keywords:
+                try:
+                    metadata = [row[column].casefold() for column in metadata_columns]
+                except IndexError as error:
+                    raise ValueError(f"missing IPLocate metadata at {path}:{rows.line_num}") from error
+                matches = {keyword for keyword in keywords if any(keyword in value for value in metadata)}
+            if asn not in wanted and not matches:
                 continue
             try:
                 network = ipaddress.ip_network(row[network_column])
             except (IndexError, TypeError, ValueError) as error:
                 raise ValueError(f"invalid IPLocate network at {path}:{rows.line_num}") from error
-            yield asn, network
+            yield asn, network, matches
 
 
 def database_networks(args: argparse.Namespace, wanted: set[int]) -> Iterator[tuple[int, ipaddress.IPv4Network | ipaddress.IPv6Network]]:
     """Yield selected ASN networks; selected parent ranges remain included."""
     if args.database_source == "iplocate":
-        for asn, network in iplocate_networks(args.database, wanted):
+        for asn, network, _ in iplocate_networks(args.database, wanted):
             if network.version == args.family:
                 yield asn, network
         return
@@ -138,23 +170,33 @@ def expand_asns(args: argparse.Namespace) -> int:
     datacenter_included, datacenter_excluded = load_asn_rules(args.datacenter_asns)
     # Includes are inherited; exclusions are scoped to the file's category.
     datacenter_included |= vpn_included
+    vpn_keywords, vpn_keyword_exclusions = load_keyword_rules(getattr(args, "vpn_keywords", None))
+    dc_keywords, dc_keyword_exclusions = load_keyword_rules(getattr(args, "datacenter_keywords", None))
     rules = (
-        (vpn_included, args.vpn_output),
-        (datacenter_included, args.datacenter_output),
-        (vpn_excluded, args.vpn_exclusions_output),
-        (datacenter_excluded, args.datacenter_exclusions_output),
+        (vpn_included, vpn_keywords, args.vpn_output),
+        (datacenter_included, dc_keywords | vpn_keywords, args.datacenter_output),
+        (vpn_excluded, vpn_keyword_exclusions, args.vpn_exclusions_output),
+        (datacenter_excluded, dc_keyword_exclusions, args.datacenter_exclusions_output),
     )
     with ExitStack() as stack:
         outputs = []
         wanted: set[int] = set()
-        for asns, path in rules:
+        keywords: set[str] = set()
+        for asns, terms, path in rules:
             if path is not None:
-                outputs.append((asns, stack.enter_context(open_output(path))))
+                outputs.append((asns, terms, stack.enter_context(open_output(path))))
                 wanted |= asns
-        for asn, network in database_networks(args, wanted):
+                keywords |= terms
+        if args.database_source == "iplocate":
+            records = iplocate_networks(args.database, wanted, keywords)
+        else:
+            records = ((asn, network, set()) for asn, network in database_networks(args, wanted))
+        for asn, network, matches in records:
+            if network.version != args.family:
+                continue
             line = f"{network}\n"
-            for asns, output in outputs:
-                if asn in asns:
+            for asns, terms, output in outputs:
+                if asn in asns or matches & terms:
                     output.write(line)
     return 0
 
@@ -163,25 +205,35 @@ def expand_iplocate(args: argparse.Namespace) -> int:
     """Route both families and explicit exclusions from one CSV scan."""
     vpn_included, vpn_excluded = load_asn_rules(args.vpn_asns)
     dc_included, dc_excluded = load_asn_rules(args.datacenter_asns)
+    vpn_keywords, vpn_keyword_exclusions = load_keyword_rules(getattr(args, "vpn_keywords", None))
+    dc_keywords, dc_keyword_exclusions = load_keyword_rules(getattr(args, "datacenter_keywords", None))
     rules = {
-        "vpn": (vpn_included, vpn_excluded),
-        "datacenter": (dc_included | vpn_included, dc_excluded),
+        "vpn": ((vpn_included, vpn_keywords), (vpn_excluded, vpn_keyword_exclusions)),
+        "datacenter": ((dc_included | vpn_included, dc_keywords | vpn_keywords),
+                       (dc_excluded, dc_keyword_exclusions)),
     }
     families = (4, 6) if args.family == "all" else (int(args.family[-1]),)
     categories = ("vpn", "datacenter") if args.list == "all" else (args.list,)
     with ExitStack() as stack:
         outputs: dict[int, dict[int, list[TextIO]]] = {family: {} for family in families}
+        keyword_outputs: dict[int, dict[str, list[TextIO]]] = {family: {} for family in families}
         wanted: set[int] = set()
+        keywords: set[str] = set()
         for family in families:
             for category in categories:
-                for asns, suffix in zip(rules[category], ("asn", "exclusions")):
+                for (asns, terms), suffix in zip(rules[category], ("asn", "exclusions")):
                     path = args.output_dir / f"{category}-ipv{family}-{suffix}.txt"
                     output = stack.enter_context(open_output(path))
                     wanted |= asns
+                    keywords |= terms
                     for asn in asns:
                         outputs[family].setdefault(asn, []).append(output)
-        for asn, network in iplocate_networks(args.database, wanted):
-            destinations = outputs.get(network.version, {}).get(asn, ())
+                    for keyword in terms:
+                        keyword_outputs[family].setdefault(keyword, []).append(output)
+        for asn, network, matches in iplocate_networks(args.database, wanted, keywords):
+            destinations = set(outputs.get(network.version, {}).get(asn, ()))
+            for keyword in matches:
+                destinations.update(keyword_outputs.get(network.version, {}).get(keyword, ()))
             if destinations:
                 line = f"{network}\n"
                 for output in destinations:
@@ -280,6 +332,8 @@ def build_parser() -> argparse.ArgumentParser:
     expand.add_argument("--database-source", choices=("iptoasn", "iplocate"), default="iptoasn")
     expand.add_argument("--vpn-asns", type=Path, required=True)
     expand.add_argument("--datacenter-asns", type=Path, required=True)
+    expand.add_argument("--vpn-keywords", type=Path)
+    expand.add_argument("--datacenter-keywords", type=Path)
     expand.add_argument("--vpn-output", type=Path)
     expand.add_argument("--datacenter-output", type=Path)
     expand.add_argument("--vpn-exclusions-output", type=Path)
@@ -292,6 +346,8 @@ def build_parser() -> argparse.ArgumentParser:
     combined.add_argument("--database", type=Path, required=True)
     combined.add_argument("--vpn-asns", type=Path, required=True)
     combined.add_argument("--datacenter-asns", type=Path, required=True)
+    combined.add_argument("--vpn-keywords", type=Path)
+    combined.add_argument("--datacenter-keywords", type=Path)
     combined.add_argument("--output-dir", type=Path, required=True)
     combined.set_defaults(handler=expand_iplocate)
 
